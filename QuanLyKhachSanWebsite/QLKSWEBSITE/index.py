@@ -2,7 +2,7 @@ import paypalrestsdk
 from flask_sqlalchemy.model import Model
 
 import dao
-from flask import render_template, request, redirect, url_for, jsonify
+from flask import render_template, request, redirect, url_for, jsonify, flash
 from QLKSWEBSITE import app, models, db
 from QLKSWEBSITE.dao import callback_momo, DatPhong
 
@@ -19,6 +19,8 @@ def datphong():
         return dao.DatPhong(action)
     if action == 'momo':
         return dao.DatPhong(action)
+    return render_template("index.html")
+
 
 
 # @app.route("/payment", methods=["POST"])

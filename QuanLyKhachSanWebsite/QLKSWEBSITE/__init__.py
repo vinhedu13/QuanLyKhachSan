@@ -3,7 +3,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-
+app.secret_key = 'your_secret_key'
 app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:1313@localhost/qlks?charset=utf8mb4"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["PAGE_SIZE"] = 10
