@@ -3,7 +3,7 @@ from flask_sqlalchemy.model import Model
 
 import dao
 from flask import render_template, request, redirect, url_for, jsonify, flash
-from QLKSWEBSITE import app, models, db
+from QLKSWEBSITE import app, db
 from QLKSWEBSITE.dao import callback_momo, DatPhong
 
 
