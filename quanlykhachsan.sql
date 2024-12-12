@@ -16,14 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Current Database: `quanlykhachsan`
---
-
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `quanlykhachsan` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-
-USE `quanlykhachsan`;
-
---
 -- Table structure for table `baocaodoanhthu`
 --
 
@@ -139,7 +131,7 @@ CREATE TABLE `hoadon` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idPhieu` (`idPhieu`),
   CONSTRAINT `hoadon_ibfk_1` FOREIGN KEY (`idPhieu`) REFERENCES `phieu` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -148,6 +140,7 @@ CREATE TABLE `hoadon` (
 
 LOCK TABLES `hoadon` WRITE;
 /*!40000 ALTER TABLE `hoadon` DISABLE KEYS */;
+INSERT INTO `hoadon` VALUES (2000000,1,1,'2024-12-10 21:14:36',1),(4000000,0,2,'2024-12-10 21:14:36',2);
 /*!40000 ALTER TABLE `hoadon` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -171,7 +164,7 @@ CREATE TABLE `khachhang` (
   PRIMARY KEY (`id`),
   KEY `idLoaiKhach` (`idLoaiKhach`),
   CONSTRAINT `khachhang_ibfk_1` FOREIGN KEY (`idLoaiKhach`) REFERENCES `loaikhach` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -180,6 +173,7 @@ CREATE TABLE `khachhang` (
 
 LOCK TABLES `khachhang` WRITE;
 /*!40000 ALTER TABLE `khachhang` DISABLE KEYS */;
+INSERT INTO `khachhang` VALUES ('Nguyễn Văn','A','Nam','123456789012','0987654321','nva@example.com','Hà Nội',1,1),('Trần Thị','B','Nữ','234567890123','0978645321','ttb@example.com','TP.HCM',1,2),('Lê Văn','C','Nam','345678901234','0967534210','lvc@example.com','USA',2,3);
 /*!40000 ALTER TABLE `khachhang` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -195,7 +189,7 @@ CREATE TABLE `loaikhach` (
   `heSo` double NOT NULL,
   `id` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -204,6 +198,7 @@ CREATE TABLE `loaikhach` (
 
 LOCK TABLES `loaikhach` WRITE;
 /*!40000 ALTER TABLE `loaikhach` DISABLE KEYS */;
+INSERT INTO `loaikhach` VALUES ('Nội Địa',1,1),('Nước ngoài',1.5,2);
 /*!40000 ALTER TABLE `loaikhach` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,7 +213,7 @@ CREATE TABLE `loaiphieu` (
   `tenLoaiPhieu` varchar(50) NOT NULL,
   `id` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -227,6 +222,7 @@ CREATE TABLE `loaiphieu` (
 
 LOCK TABLES `loaiphieu` WRITE;
 /*!40000 ALTER TABLE `loaiphieu` DISABLE KEYS */;
+INSERT INTO `loaiphieu` VALUES ('Phiếu thuê phòng',1),('Phiếu đặt phòng',2);
 /*!40000 ALTER TABLE `loaiphieu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -243,7 +239,7 @@ CREATE TABLE `loaiphong` (
   `soLuong` int NOT NULL,
   `id` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -252,6 +248,7 @@ CREATE TABLE `loaiphong` (
 
 LOCK TABLES `loaiphong` WRITE;
 /*!40000 ALTER TABLE `loaiphong` DISABLE KEYS */;
+INSERT INTO `loaiphong` VALUES ('Phòng đơn',500000,10,1),('Phòng đôi',800000,5,2),('Phòng VIP',1500000,2,3);
 /*!40000 ALTER TABLE `loaiphong` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -266,7 +263,7 @@ CREATE TABLE `loaitaikhoan` (
   `tenLoaiTaiKhoan` varchar(50) NOT NULL,
   `id` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -275,6 +272,7 @@ CREATE TABLE `loaitaikhoan` (
 
 LOCK TABLES `loaitaikhoan` WRITE;
 /*!40000 ALTER TABLE `loaitaikhoan` DISABLE KEYS */;
+INSERT INTO `loaitaikhoan` VALUES ('Admin',1),('Khách hàng',2),('Nhân viên',3);
 /*!40000 ALTER TABLE `loaitaikhoan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -292,7 +290,7 @@ CREATE TABLE `phieu` (
   PRIMARY KEY (`id`),
   KEY `loaiPhieu` (`loaiPhieu`),
   CONSTRAINT `phieu_ibfk_1` FOREIGN KEY (`loaiPhieu`) REFERENCES `loaiphieu` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -301,6 +299,7 @@ CREATE TABLE `phieu` (
 
 LOCK TABLES `phieu` WRITE;
 /*!40000 ALTER TABLE `phieu` DISABLE KEYS */;
+INSERT INTO `phieu` VALUES (1,'2024-12-10 21:10:28',1),(2,'2024-12-10 21:10:28',2);
 /*!40000 ALTER TABLE `phieu` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -320,7 +319,7 @@ CREATE TABLE `phieu_khachhang` (
   KEY `idPhieu` (`idPhieu`),
   CONSTRAINT `phieu_khachhang_ibfk_1` FOREIGN KEY (`idKhachHang`) REFERENCES `khachhang` (`id`),
   CONSTRAINT `phieu_khachhang_ibfk_2` FOREIGN KEY (`idPhieu`) REFERENCES `phieuthuephong` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -329,6 +328,7 @@ CREATE TABLE `phieu_khachhang` (
 
 LOCK TABLES `phieu_khachhang` WRITE;
 /*!40000 ALTER TABLE `phieu_khachhang` DISABLE KEYS */;
+INSERT INTO `phieu_khachhang` VALUES (2,1,1);
 /*!40000 ALTER TABLE `phieu_khachhang` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -344,13 +344,14 @@ CREATE TABLE `phieudatphong` (
   `idKhachHang` int NOT NULL,
   `idLoaiPhong` int NOT NULL,
   `soLuong` int NOT NULL,
+  `trangThai` enum('Đã nhận phòng','Chưa nhận phòng','Đã hủy') DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idKhachHang` (`idKhachHang`),
   KEY `idLoaiPhong` (`idLoaiPhong`),
   CONSTRAINT `phieudatphong_ibfk_1` FOREIGN KEY (`id`) REFERENCES `phieu` (`id`),
   CONSTRAINT `phieudatphong_ibfk_2` FOREIGN KEY (`idKhachHang`) REFERENCES `khachhang` (`id`),
   CONSTRAINT `phieudatphong_ibfk_3` FOREIGN KEY (`idLoaiPhong`) REFERENCES `loaiphong` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -359,6 +360,7 @@ CREATE TABLE `phieudatphong` (
 
 LOCK TABLES `phieudatphong` WRITE;
 /*!40000 ALTER TABLE `phieudatphong` DISABLE KEYS */;
+INSERT INTO `phieudatphong` VALUES (2,2,2,2,NULL);
 /*!40000 ALTER TABLE `phieudatphong` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -373,13 +375,12 @@ CREATE TABLE `phieuthuephong` (
   `id` int NOT NULL AUTO_INCREMENT,
   `ngayNhanPhong` datetime NOT NULL,
   `ngayTraPhong` datetime NOT NULL,
-  `trangThai` enum('Đã nhận phòng','Chưa nhận phòng','Đã hủy','Quá hạn nhận') NOT NULL,
   `idPhieuDatPhong` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idPhieuDatPhong` (`idPhieuDatPhong`),
   CONSTRAINT `phieuthuephong_ibfk_1` FOREIGN KEY (`id`) REFERENCES `phieu` (`id`),
   CONSTRAINT `phieuthuephong_ibfk_2` FOREIGN KEY (`idPhieuDatPhong`) REFERENCES `phieudatphong` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -388,6 +389,7 @@ CREATE TABLE `phieuthuephong` (
 
 LOCK TABLES `phieuthuephong` WRITE;
 /*!40000 ALTER TABLE `phieuthuephong` DISABLE KEYS */;
+INSERT INTO `phieuthuephong` VALUES (1,'2024-12-01 14:00:00','2024-12-05 12:00:00',NULL);
 /*!40000 ALTER TABLE `phieuthuephong` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -407,7 +409,7 @@ CREATE TABLE `phieuthuephong_phong` (
   KEY `idPhieuThuePhong` (`idPhieuThuePhong`),
   CONSTRAINT `phieuthuephong_phong_ibfk_1` FOREIGN KEY (`idPhong`) REFERENCES `phong` (`id`),
   CONSTRAINT `phieuthuephong_phong_ibfk_2` FOREIGN KEY (`idPhieuThuePhong`) REFERENCES `phieuthuephong` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -416,6 +418,7 @@ CREATE TABLE `phieuthuephong_phong` (
 
 LOCK TABLES `phieuthuephong_phong` WRITE;
 /*!40000 ALTER TABLE `phieuthuephong_phong` DISABLE KEYS */;
+INSERT INTO `phieuthuephong_phong` VALUES (6,1,2);
 /*!40000 ALTER TABLE `phieuthuephong_phong` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -436,7 +439,7 @@ CREATE TABLE `phong` (
   KEY `idTinhTrangPhong` (`idTinhTrangPhong`),
   CONSTRAINT `phong_ibfk_1` FOREIGN KEY (`idLoaiPhong`) REFERENCES `loaiphong` (`id`),
   CONSTRAINT `phong_ibfk_2` FOREIGN KEY (`idTinhTrangPhong`) REFERENCES `tinhtrangphong` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -445,6 +448,7 @@ CREATE TABLE `phong` (
 
 LOCK TABLES `phong` WRITE;
 /*!40000 ALTER TABLE `phong` DISABLE KEYS */;
+INSERT INTO `phong` VALUES ('101',1,1,5),('102',1,2,6),('201',2,1,7),('301',3,3,8),('103',1,1,9);
 /*!40000 ALTER TABLE `phong` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -493,7 +497,7 @@ CREATE TABLE `taikhoan` (
   KEY `idLoaiTaiKhoan` (`idLoaiTaiKhoan`),
   CONSTRAINT `taikhoan_ibfk_1` FOREIGN KEY (`idLoaiTaiKhoan`) REFERENCES `loaitaikhoan` (`id`),
   CONSTRAINT `taikhoan_ibfk_2` FOREIGN KEY (`idKhachHang`) REFERENCES `khachhang` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -502,6 +506,7 @@ CREATE TABLE `taikhoan` (
 
 LOCK TABLES `taikhoan` WRITE;
 /*!40000 ALTER TABLE `taikhoan` DISABLE KEYS */;
+INSERT INTO `taikhoan` VALUES ('admin','123','0901234567','admin@example.com','2024-12-10 21:07:19',1,1,1),('customer1','123','0912345678','customer1@example.com','2024-12-10 21:07:19',2,2,2),('employee1','123','0923456789','employee1@example.com','2024-12-10 21:07:19',3,3,3);
 /*!40000 ALTER TABLE `taikhoan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -516,7 +521,7 @@ CREATE TABLE `tinhtrangphong` (
   `tenTinhTrangPhong` varchar(50) DEFAULT NULL,
   `id` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -525,6 +530,7 @@ CREATE TABLE `tinhtrangphong` (
 
 LOCK TABLES `tinhtrangphong` WRITE;
 /*!40000 ALTER TABLE `tinhtrangphong` DISABLE KEYS */;
+INSERT INTO `tinhtrangphong` VALUES ('Trống',1),('Đang thuê',2),('Đang bảo trì',3);
 /*!40000 ALTER TABLE `tinhtrangphong` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -560,4 +566,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-09 19:22:20
+-- Dump completed on 2024-12-12 19:14:39

@@ -118,7 +118,6 @@ class PhieuThuePhong(db.Model):
     id = db.Column(db.Integer, ForeignKey('phieu.id'),primary_key=True, autoincrement=True, nullable=False)
     ngayNhanPhong = db.Column(db.DateTime, nullable=False)
     ngayTraPhong = db.Column(db.DateTime, nullable=False)
-    trangThai = db.Column(db.Enum('Đã nhận phòng','Chưa nhận phòng','Đã hủy', 'Quá hạn nhận'), nullable=False)
     idPhieuDatPhong = db.Column(db.Integer, ForeignKey('phieudatphong.id'),nullable=True, unique = True)
     phieuThuePhong_Phong = relationship('PhieuThuePhong_Phong', backref='phieuthuephong', lazy=True)
     phieu_khachhang = relationship('Phieu_KhachHang', backref='phieuthuephong', lazy=True)
@@ -170,6 +169,7 @@ class PhieuDatPhong(db.Model):
     idKhachHang = db.Column(db.Integer, ForeignKey('khachhang.id'), nullable = False)
     idLoaiPhong = db.Column(db.Integer, ForeignKey('loaiphong.id'), nullable=False)
     soLuong = db.Column(db.Integer, nullable=False)
+    trangThai = db.Column(db.Enum('Đã nhận phòng', 'Chưa nhận phòng', 'Đã hủy'), nullable=True, default = 'Chưa nhận phòng')
 
 
 class BaoCaoThongKe_HoaDon(BaseModel):

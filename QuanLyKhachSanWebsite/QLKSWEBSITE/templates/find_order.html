@@ -1,0 +1,38 @@
+{% extends "Layout/base.html" %}
+{%block content%}
+<div class="container">
+    <header>
+        <h1>Tìm Kiếm Đơn Hàng</h1>
+    </header>
+
+    <section class="search-section">
+        <form id="search-form">
+            <label for="order-id">Mã đơn hàng:</label>
+            <input type="text" id="order-id" placeholder="Nhập mã đơn hàng">
+
+            <label for="order-date">Ngày đặt hàng:</label>
+            <input type="date" id="order-date">
+
+
+            <button type="submit">Tìm kiếm</button>
+        </form>
+    </section>
+
+    <section class="results-section">
+        <h2>Kết quả tìm kiếm</h2>
+        <table id="results-table">
+            <thead>
+            <tr>
+                <th>Số đơn hàng</th>
+                <th>Ngày đặt</th>
+                <th>Trạng thái</th>
+                <th>Giá trị</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Dữ liệu kết quả tìm kiếm sẽ được hiển thị tại đây -->
+            </tbody>
+        </table>
+    </section>
+</div>
+{%endblock%}

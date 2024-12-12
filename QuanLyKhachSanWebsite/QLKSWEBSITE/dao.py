@@ -1,6 +1,6 @@
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import paypalrestsdk
 import requests
@@ -8,22 +8,23 @@ import hmac
 import hashlib
 from flask import jsonify, request, url_for, redirect, render_template, render_template_string
 from idna.idnadata import scripts
-from sqlalchemy import and_
+from sqlalchemy import and_, or_
 
 from QLKSWEBSITE import db, models, app
+from QLKSWEBSITE.models import LoaiPhong
 
 
-def ThanhToanMomo(idHoaDon, tongTien):
+def ThanhToanMomo(idPhieu, tongTien):
     # Thông tin thanh toán
     endpoint = "https://test-payment.momo.vn/v2/gateway/api/create"
     accessKey = "F8BBA842ECF85"
     secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz"
     orderInfo = "pay with MoMo"
     partnerCode = "MOMO"
-    redirectUrl = "https://4ab1-115-76-97-74.ngrok-free.app/payment/redirect"
-    ipnUrl = "https://4ab1-115-76-97-74.ngrok-free.app/callbackmomo"
+    redirectUrl = "https://0ae3-222-253-45-135.ngrok-free.app/payment/redirect"
+    ipnUrl = "https://0ae3-222-253-45-135.ngrok-free.app/callbackmomo"
     amount = str(tongTien)  # Số tiền thanh toán
-    orderId = str(idHoaDon)
+    orderId = str(idPhieu)
     requestId = str(uuid.uuid4())
     extraData = ""
     partnerName = "MoMo Payment"
@@ -96,8 +97,8 @@ def callback_momo():
         if resultCode == 0:  # 0 là thanh toán thành công
             print("Payment successful!")
             print(f"Transaction ID: {transId}, Amount: {amount}, Order ID: {orderId}")
-            hoaDon = db.session.get(models.HoaDon, orderId)
-            hoaDon.trangThai = 1
+            hoaDon = models.HoaDon(idPhieu = orderId, trangThai = 1, tongTien = amount, thoiGianTao = datetime.now())
+            db.session.add(hoaDon)
             db.session.commit()
         else:
             print(f"Payment failed. Result Code: {resultCode}, Message: {message}")
@@ -112,14 +113,14 @@ def callback_momo():
         return jsonify({'message': 'Internal Server Error'}), 500
 
 
-def paypal(idHoaDon, tongTien):
+def paypal(idPhieu, tongTien):
     payment = paypalrestsdk.Payment({
         "intent": "sale",
         "payer": {
             "payment_method": "paypal"
         },
         "redirect_urls": {
-            "return_url": url_for('payment_success', _external=True, idHoaDon=idHoaDon),
+            "return_url": url_for('payment_success', _external=True, idPhieu = idPhieu, tongTien = tongTien),
             "cancel_url": url_for('payment_cancel', _external=True)
         },
         "transactions": [{
@@ -149,89 +150,94 @@ def paypal(idHoaDon, tongTien):
         return jsonify({"error": payment.error})
 
 
-def KiemTraTinhTrangPhong_ThoiGianKhongQua28Ngay(idPhong, ngayNhanPhongMoi, ngayTraPhongMoi, ngayDatPhong):
-    check = False
-    ngayNhanPhongMoi = datetime.strptime(ngayNhanPhongMoi, '%Y-%m-%d %H:%M:%S')
-    ngayTraPhongMoi = datetime.strptime(ngayTraPhongMoi, '%Y-%m-%d %H:%M:%S')
-    if (ngayNhanPhongMoi - ngayDatPhong).days <= 28:
-        check = True
+def KiemTraThoiGianNhanPhong_DatPhong(thoiGianNhan, thoiGianDat):
+    thoiGianNhan = datetime.strptime(thoiGianNhan, '%Y-%m-%d %H:%M:%S')
+    thoiGianDat = datetime.strptime(thoiGianDat, '%Y-%m-%d %H:%M:%S')
+    khoangThoiGian = thoiGianNhan - thoiGianDat
+    return khoangThoiGian.days
 
-    # Kiểm tra tình trạng phòng
-    phong_trung = db.session.query(models.PhieuThuePhong).filter(
-        models.PhieuThuePhong.idPhong == idPhong,
-        and_(
-            models.PhieuThuePhong.ngayNhanPhong <= ngayTraPhongMoi,
-            models.PhieuThuePhong.ngayTraPhong >= ngayNhanPhongMoi
+
+def KiemTraPhongTrongTheoThoiGian(idLoaiPhong, thoiGianNhan, thoiGianTra):
+    danh_sach_phong = db.session.query(models.Phong).filter(models.Phong.idLoaiPhong == idLoaiPhong).all()
+    phong_da_duoc_thue = (
+        db.session.query(models.Phong.id)
+        .join(models.PhieuThuePhong_Phong, models.Phong.id == models.PhieuThuePhong_Phong.idPhong)
+        .join(models.PhieuThuePhong, models.PhieuThuePhong_Phong.idPhieuThuePhong == models.PhieuThuePhong.id)
+        .filter(
+            or_(
+                and_(models.PhieuThuePhong.ngayNhanPhong <= thoiGianTra, models.PhieuThuePhong.ngayTraPhong > thoiGianNhan)
+            )
         )
-    ).count()
+    ).distinct()
 
-    if phong_trung > 0:
-        print("Phòng đã được đặt trong thời gian này, vui lòng chọn phòng khác hoặc thời gian khác.")
-        check = False
-    if phong_trung == 0:
-        check = True
+    danh_sach_phong_trong = [
+        phong.id for phong in danh_sach_phong if phong.id not in {p.id for p in phong_da_duoc_thue}
+    ]
 
-    return check
+    return danh_sach_phong_trong
 
 
-def TaoPhieuThue_PhieuDat_HoaDon_DatPhong(sdtNguoiDat, tenNguoiDat, emailNguoiDat, hoNguoiDat, thoiGianTao, idPhong,
-                                          ngayNhanPhong, ngayTraPhong, trangThai, trangThaiHoaDon, tongTien):
-    phieuThuePhong = models.PhieuThuePhong(ngayNhanPhong=ngayNhanPhong, ngayTraPhong=ngayTraPhong,
-                                           trangThai=trangThai,
-                                           idPhong=idPhong, thoiGianTao=thoiGianTao)
+def SoLuongPhongTrongTheoLoaiPhong(idLoaiPhong, thoiGianNhan, thoiGianTra):
+    count = 0
+    phongTrong = KiemTraPhongTrongTheoThoiGian(idLoaiPhong, thoiGianNhan, thoiGianTra)
+    for phong in phongTrong:
+        count = count + 1
+    return count
+
+
+def TaoPhieu(loaiPhieu):
+    phieu = models.Phieu(loaiPhieu = loaiPhieu, thoiGianTao = datetime.now())
+    db.session.add(phieu)
+    db.session.commit()
+    return phieu
+
+
+def TaoPhieuDatPhong(idKhachHang, idLoaiPhong, soLuong):
+    phieu = TaoPhieu(loaiPhieu= '2')
+    phieuDatPhong = models.PhieuDatPhong(id = phieu.id, idLoaiPhong = idLoaiPhong, idKhachHang = idKhachHang, soLuong = soLuong )
+    db.session.add(phieuDatPhong)
+    db.session.commit()
+    return phieuDatPhong
+
+
+def TaoPhieuThuePhong_Phong(idPhieuThuePhong, idPhong):
+    phieuThuePhong_Phong = models.PhieuThuePhong_Phong(idPhieuThuePhong=idPhieuThuePhong, idPhong=idPhong)
+    db.session.add(phieuThuePhong_Phong)
+    db.session.commit()
+    return phieuThuePhong_Phong
+
+
+def TaoPhieu_KhachHang(idKhachHang, idPhieu):
+    phieu_KhachHang = models.Phieu_KhachHang(idPhieu = idPhieu, idKhachHang = idKhachHang)
+    db.session.add(phieu_KhachHang)
+    db.session.commit()
+    return phieu_KhachHang
+
+
+def TaoPhieuThuePhong(ngayNhanPhong, ngayTraPhong, idPhong, idKhachHang, idPhieuDatPhong):
+    phieu = TaoPhieu(loaiPhieu= '1')
+    phieuThuePhong = models.PhieuThuePhong(id = phieu.id, ngayNhanPhong = ngayNhanPhong, ngayTraPhong = ngayTraPhong, idPhieuDatPhong = idPhieuDatPhong)
     db.session.add(phieuThuePhong)
     db.session.commit()
-    phieuDatPhong = models.PhieuDatPhong(id=phieuThuePhong.id, sdtNguoiDat=sdtNguoiDat, tenNguoiDat=tenNguoiDat,
-                                         emailNguoiDat=emailNguoiDat,
-                                         hoNguoiDat=hoNguoiDat, thoiGianTao=thoiGianTao)
-    hoaDon = models.HoaDon(trangThai=trangThaiHoaDon, idPhieu=phieuThuePhong.id, thoiGianTao=thoiGianTao,
-                           tongTien=tongTien)
-
-    db.session.add(phieuDatPhong)
-    db.session.add(hoaDon)
-    db.session.commit()
-
-    return hoaDon
+    return phieuThuePhong
 
 
-def DatPhong(phuongThucThanhToan):
-    sdtNguoiDat = "1234"
-    tenNguoiDat = "Vinh"
-    emailNguoiDat = "lqv@gmail.com"
-    hoNguoiDat = "Lê"
-    thoiGianTao = datetime.now()
-    idPhong = '1'
-    ngayNhanPhong = '2024-12-04 14:00:00'
-    ngayTraPhong = '2024-12-05 14:00:00'
-    trangThai = "Chưa nhận phòng"
-    trangThaiHoaDon = 0
-    tongTien = 90000
+def TimKiem(ngayNhanPhong, ngayTraPhong, soNguoi, soPhong):
+    ketQua = []
+    listPhong = db.session.query(LoaiPhong).all()
+    for p in listPhong:
+        soPhongTrong = KiemTraPhongTrongTheoThoiGian(p.id, ngayNhanPhong, ngayTraPhong)
+        ketQua.append({
+            'tenLoaiPhong': listPhong.tenLoaiPhong,
+            'donGia': listPhong.donGia,
+            'soPhongCon': int(soPhongTrong),
+        })
 
-    if phuongThucThanhToan == 'momo':
-        check = KiemTraTinhTrangPhong_ThoiGianKhongQua28Ngay(idPhong, ngayNhanPhong, ngayTraPhong, thoiGianTao)
-        if check == True:
-            create = TaoPhieuThue_PhieuDat_HoaDon_DatPhong(sdtNguoiDat, tenNguoiDat, emailNguoiDat, hoNguoiDat,
-                                                           thoiGianTao,
-                                                           idPhong,
-                                                           ngayNhanPhong, ngayTraPhong, trangThai, trangThaiHoaDon,
-                                                           tongTien)
-            return ThanhToanMomo(create.id, int(create.tongTien))
-        if check == False:
-            return render_template("index.html")
 
-    if phuongThucThanhToan == 'paypal':
-        check = KiemTraTinhTrangPhong_ThoiGianKhongQua28Ngay(idPhong, ngayNhanPhong, ngayTraPhong, thoiGianTao)
-        if check == True:
-            create = TaoPhieuThue_PhieuDat_HoaDon_DatPhong(sdtNguoiDat, tenNguoiDat, emailNguoiDat, hoNguoiDat,
-                                                           thoiGianTao,
-                                                           idPhong,
-                                                           ngayNhanPhong, ngayTraPhong, trangThai, trangThaiHoaDon,
-                                                           tongTien)
-            return paypal(create.id, int(create.tongTien))
-        if check == False:
-            return render_template("index.html")
 
 
 if __name__ == '__main__':
     with app.app_context():
+        # a = KiemTraPhongTrongTheoThoiGian(1, '2024-12-01 14:00:00', '2024-12-05 12:00:00')
+        # print(a)
         app.run(debug=True)
