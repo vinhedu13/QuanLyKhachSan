@@ -850,6 +850,10 @@ footer .fab:hover {
     transform: scale(1.2);
 }
 
-
+.disabled {
+    pointer-events: none; /* Ngăn chặn tương tác */
+    background-color: rgba(211, 211, 211, 0.5); /* Màu xám nhẹ với độ trong suốt */
+    opacity: 0.5; /* Làm mờ div */
+}
 
 

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn Phương Thức Thanh Toán</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>Chọn Phương Thức Thanh Toán</h1>
+        <form action="/thanhtoan" method="POST"> <!-- Đường dẫn để xử lý thanh toán -->
+            <div class="mb-3">
+                <label class="form-label">Phương thức thanh toán</label>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="payment" id="momo" value="momo" required>
+                    <label class="form-check-label" for="momo">
+                        Momo
+                    </label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="payment" id="paypal" value="paypal">
+                    <label class="form-check-label" for="paypal">
+                        PayPal
+                    </label>
+                </div>
+            </div>
+            <input type="hidden" name="tongTien" value="{{tongTien}}">
+            <input type="hidden" name="ngaynhan" value="{{ngaynhan}}">
+            <input type="hidden" name="ngaytra" value="{{ngaytra}}">
+            <input type="hidden" name="thoiGianDat" value="{{thoiGianDat}}">
+            <input type="hidden" name="idKhachHang" value="{{idKhachHang}}">
+            <input type="hidden" name="idLoaiPhong" value="{{idLoaiPhong}}">
+            <input type="hidden" name="soLuong" value="{{soLuong}}">
+            <button type="submit" class="btn btn-primary">Thanh Toán</button> <!-- Nút để gửi form -->
+        </form>
+    </div>
+</body>
+</html>

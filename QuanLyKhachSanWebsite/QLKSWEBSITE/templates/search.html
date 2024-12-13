@@ -1,0 +1,112 @@
+{% extends "Layout/base.html" %}
+{%block content%}
+{% for p in data %}
+{% if p['soPhongCon'] < soLuong|int %}
+<div class="container mt-4 disabled">
+    <div class="room-type ">
+        <div class="row">
+            <!-- Room Images and Details -->
+            <div class="col-md-4 room-info">
+                <img src="room-image.jpg" alt="Room Image">
+                <div class="mt-2">
+                    <h5>{{p['tenLoaiPhong']}}</h5>
+                    <ul>
+                        <li>1 giường đôi lớn & 1 giường sofa</li>
+                        <li>Diện tích phòng: {{p['dienTich']}} m²</li>
+                        <li>Hướng Vườn</li>
+                        <li>Ban công/sân hiên</li>
+                        <li>Không hút thuốc</li>
+                        <li>Bồn tắm/vòi sen riêng</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Booking Options -->
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-8">
+                        <ul>
+                            <li>Bãi đậu xe</li>
+                            <li>Nhận phòng nhanh</li>
+                            <li>WiFi miễn phí</li>
+                            <li>Phòng tập</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-4 text-center price-details">
+                        <p>Giá mỗi đêm:</p>
+                        <h3 class="text-success">{{p['donGia']}}</h3>
+                        <form class="d-flex justify-content-center align-items-center mb-2" action="/datphong"
+                              method="POST">
+                            <input style="max-width: 60px;" type="label" name="soLuong" class="form-control text-center"
+                                   value="{{soLuong}}" readonly>
+                            <input type="hidden" name="id" value="{{ p['id'] }}">
+                            <input type="hidden" name="donGia" value="{{ p['donGia'] }}">
+                            <input type="hidden" name="ngayNhanPhong" value="{{ngayNhanPhong}}">
+                            <input type="hidden" name="ngayTraPhong" value="{{ngayTraPhong}}">
+                            <button class="btn btn-book" type="submit" style="background-color: red">Đặt ngay</button>
+                        </form>
+                        <p class="text-danger">Chỉ còn lại {{p['soPhongCon']}} phòng!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<div class="container mt-4">
+    <div class="room-type">
+        <div class="row">
+            <!-- Room Images and Details -->
+            <div class="col-md-4 room-info">
+                <img src="room-image.jpg" alt="Room Image">
+                <div class="mt-2">
+                    <h5>{{p['tenLoaiPhong']}}</h5>
+                    <ul>
+                        <li>1 giường đôi lớn & 1 giường sofa</li>
+                        <li>Diện tích phòng: {{p['dienTich']}} m²</li>
+                        <li>Hướng Vườn</li>
+                        <li>Ban công/sân hiên</li>
+                        <li>Không hút thuốc</li>
+                        <li>Bồn tắm/vòi sen riêng</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Booking Options -->
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-8">
+                        <ul>
+                            <li>Bãi đậu xe</li>
+                            <li>Nhận phòng nhanh</li>
+                            <li>WiFi miễn phí</li>
+                            <li>Phòng tập</li>
+                        </ul>
+                    </div>
+
+                    <div class="col-md-4 text-center price-details">
+                        <p>Giá mỗi đêm:</p>
+                        <h3 class="text-success">{{p['donGia']}}</h3>
+                        <form class="d-flex justify-content-center align-items-center mb-2" action="/datphong"
+                              method="POST">
+                            <input style="max-width: 60px;" type="label" name="soLuong" class="form-control text-center"
+                                   value="{{soLuong}}" readonly>
+                            <input type="hidden" name="id" value="{{ p['id'] }}">
+                            <input type="hidden" name="donGia" value="{{ p['donGia'] }}">
+                            <input type="hidden" name="ngayNhanPhong" value="{{ngayNhanPhong}}">
+                            <input type="hidden" name="ngayTraPhong" value="{{ngayTraPhong}}">
+                            <button class="btn btn-book" type="submit"
+                                    style="background-color: deepskyblue">Đặt ngay
+                            </button>
+                        </form>
+                        <p class="text-danger">Chỉ còn lại {{p['soPhongCon']}} phòng!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endfor %}
+{%endblock%}

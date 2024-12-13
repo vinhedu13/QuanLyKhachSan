@@ -1,6 +1,6 @@
-from crypt import methods
-from datetime import datetime, date
 
+from datetime import datetime, date
+import uuid
 import paypalrestsdk
 from flask_sqlalchemy.model import Model
 from sqlalchemy.exc import SQLAlchemyError
@@ -8,7 +8,7 @@ from sqlalchemy.exc import SQLAlchemyError
 import dao
 from flask import render_template, request, redirect, url_for, jsonify, flash
 from QLKSWEBSITE import app, db, models
-from QLKSWEBSITE.dao import callback_momo, paypal
+from QLKSWEBSITE.dao import callback_momo, paypal, TaoPhieuDatPhong
 
 
 @app.route("/")
@@ -19,43 +19,49 @@ def index():
 def timkiem():
     ngayNhanPhong = request.form.get('ngayNhanPhong')
     ngayTraPhong = request.form.get('ngayTraPhong')
-    soPhong = request.form.get('soPhong')
-    soNguoi = request.form.get('soNguoi')
-    return dao.TimKiem(ngayNhanPhong= ngayNhanPhong, ngayTraPhong = ngayTraPhong, soPhong = soPhong, soNguoi = soNguoi)
+    ngayNhanPhong = ngayNhanPhong + " 14:00:00"
+    ngayTraPhong = ngayTraPhong + " 12:00:00"
+    soLuong = request.form.get('soLuong')
+    soNguoi = 2
+    data = dao.TimKiem(ngayNhanPhong=ngayNhanPhong, ngayTraPhong=ngayTraPhong, soLuong = int(soLuong), soNguoi = soNguoi)
+    return render_template('search.html', data = data, soLuong = soLuong, ngayNhanPhong = ngayNhanPhong, ngayTraPhong = ngayTraPhong)
 
 @app.route("/datphong", methods=["GET", "POST"])
 def datphong():
     if request.method == "POST":
-        ho = request.form.get('ho')
-        ten = request.form.get('ten')
-        sodienthoai = request.form.get('sodienthoai')
-        email = request.form.get('email')
-        ngaynhan = request.form.get('ngaynhan')
-        ngaytra = request.form.get('ngaytra')
-        idLoaiPhong = 1
-        soLuong = 2
-        ngaynhan = ngaynhan + " 12:00:00"
+        idKhachHang = 1
+        idLoaiPhong = request.form.get("id")
+        soLuong = request.form.get("soLuong")
+        ngaynhan = request.form.get('ngayNhanPhong')
+        ngaytra = request.form.get('ngayTraPhong')
         thoiGianDat = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         loaiPhong = models.LoaiPhong.query.filter_by(id=idLoaiPhong).first()
-        tongTien = soLuong * loaiPhong.donGia
-        thanhToan = request.form.get('payment')
-        if dao.KiemTraThoiGianNhanPhong_DatPhong(thoiGianNhan = str(ngaynhan), thoiGianDat= str(thoiGianDat)) <= 28:
-            KhachHang = models.KhachHang(tenKhachHang = ten, hoKhachHang = ho, email = email, sdt = sodienthoai)
-            db.session.add(KhachHang)
-            db.session.commit()
-            phieuDatPhong = dao.TaoPhieuDatPhong(idKhachHang= KhachHang.id, idLoaiPhong= idLoaiPhong, soLuong = soLuong)
-            if thanhToan == 'paypal':
-                return redirect(url_for("paypal", tongTien = tongTien, idPhieu = phieuDatPhong.id))
-            if thanhToan == 'momo':
-                return redirect(url_for("momo", idPhieu = phieuDatPhong.id, tongTien = tongTien))
-        else:
-            return redirect(url_for("datphong"))
+        khachHang = models.KhachHang.query.filter_by(id=idKhachHang).first()
+        tongTien = int(soLuong) * int(loaiPhong.donGia)
 
-    return render_template("datphong.html")
+    return render_template("datphong.html", tongTien = tongTien, ngaynhan = ngaynhan,
+                           thoiGianDat = thoiGianDat, idKhachHang = idKhachHang, idLoaiPhong = idLoaiPhong, soLuong = soLuong, ngaytra = ngaytra)
 
-    # Hiển thị trang đặt phòng
-    return render_template("datphong.html")
 
+@app.route("/thanhtoan", methods=['POST'])
+def thanhtoan():
+    thanhToan = request.form.get('payment')
+    tongTien = request.form.get('tongTien')
+    ngaynhan = request.form.get('ngaynhan')
+    ngaytra = request.form.get('ngaytra')
+    thoiGianDat = request.form.get('thoiGianDat')
+    idKhachHang = request.form.get('idKhachHang')
+    idLoaiPhong = request.form.get("idLoaiPhong")
+    soLuong = request.form.get("soLuong")
+    if dao.KiemTraThoiGianNhanPhong_DatPhong(thoiGianNhan=str(ngaynhan), thoiGianDat=str(thoiGianDat)) <= 28:
+        phieuDatPhong = dao.TaoPhieuDatPhong(idKhachHang= idKhachHang, idLoaiPhong=idLoaiPhong, soLuong=soLuong,
+                                             ngayNhanPhong=ngaynhan, ngayTraPhong=ngaytra)
+        if thanhToan == 'paypal':
+            return redirect(url_for("paypal", tongTien=tongTien, idPhieu=phieuDatPhong.id))
+        if thanhToan == 'momo':
+            return redirect(url_for("momo", idPhieu=phieuDatPhong.id, tongTien=tongTien))
+    else:
+        return render_template('search.html')
 
 
 # @app.route("taophieuthue", methods=["POST", "GET"])

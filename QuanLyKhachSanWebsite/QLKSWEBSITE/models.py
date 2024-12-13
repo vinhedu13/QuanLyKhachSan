@@ -15,12 +15,6 @@ class BaseModel(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False)
 
 
-class QuyDinhPhong(BaseModel):
-    __tablename__ = 'quydinhphong'
-    soKhachToiDa = db.Column(db.Integer, nullable=False)
-    dieuKien = db.Column(db.String(200), nullable=True)
-
-
 class TyLePhuThu(BaseModel):
     __tablename__ = 'tylephuthu'
     tyLe = db.Column(db.Double, nullable=False)
@@ -84,6 +78,9 @@ class LoaiPhong(BaseModel):
     tenLoaiPhong = db.Column(db.String(50), nullable=False)
     donGia = db.Column(db.Double, nullable=False)
     soLuong = db.Column(db.Integer, nullable = False)
+    dienTich = db.Column(db.Double, nullable = True)
+    moTa = db.Column(db.String(100), nullable = True)
+    luongKhachToiDa = db.Column(db.Integer, nullable = True)
     phong = relationship('Phong', backref='loaiphong', lazy=True)
     phieuDatPhong = relationship('PhieuDatPhong', backref='loaiphong', lazy=True)
     def __str__(self):
@@ -170,6 +167,8 @@ class PhieuDatPhong(db.Model):
     idLoaiPhong = db.Column(db.Integer, ForeignKey('loaiphong.id'), nullable=False)
     soLuong = db.Column(db.Integer, nullable=False)
     trangThai = db.Column(db.Enum('Đã nhận phòng', 'Chưa nhận phòng', 'Đã hủy'), nullable=True, default = 'Chưa nhận phòng')
+    ngayNhanPhong = db.Column(db.DateTime, nullable=True)
+    ngayTraPhong = db.Column(db.DateTime, nullable=True)
 
 
 class BaoCaoThongKe_HoaDon(BaseModel):

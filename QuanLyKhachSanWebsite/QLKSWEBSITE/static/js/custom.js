@@ -28,10 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Apply selected values
     applyButton.addEventListener('click', () => {
         const adults = document.getElementById('adults-count').textContent;
-        const children = document.getElementById('children-count').textContent;
-        const pets = document.getElementById('checkbox-1').checked ? 'có thú cưng' : 'không thú cưng';
 
-        guestInput.value = `${adults} người lớn, ${children} trẻ em, ${pets}`;
+        guestInput.value = `${adults}`;
         guestDropdown.style.display = 'none';
     });
 

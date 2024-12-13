@@ -17,37 +17,26 @@
                     </datalist>
                 </div>
                 <div class="search-item">
-                    <label for="checkin-date">Ngày nhận phòng</label>
-                    <input type="date" id="checkin-date" name="checkin-date">
+                    <label for="ngayNhanPhong">Ngày nhận phòng</label>
+                    <input type="date" id="checkin-date" name="ngayNhanPhong" class="form-control" required>
                 </div>
                 <div class="search-item">
-                    <label for="checkout-date">Ngày trả phòng</label>
-                    <input type="date" id="checkout-date" name="checkout-date">
+                    <label for="ngayTraPhong">Ngày trả phòng</label>
+                    <input type="date" id="checkout-date" name="ngayTraPhong" class="form-control" required>
                 </div>
                 <div class="msearch-item">
-                    <label for="guests">Số người</label>
+                    <label for="soLuong">Số người</label>
                     <div id="guest-picker">
-                        <input type="text" id="guests" name="guests" placeholder="Nhấp để chọn số người" readonly>
+                        <input type="text" id="guests" name="soLuong" placeholder="Nhấp để chọn số người"
+                               class="form-control" readonly required>
                         <div class="guest-dropdown">
                             <div class="guest-row">
-                                <label for="adults">Người lớn:</label>
+                                <label for="soLuong">Số Phòng:</label>
                                 <button type="button" class="decrease" data-target="adults">-</button>
                                 <span id="adults-count">1</span>
                                 <button type="button" class="increase" data-target="adults">+</button>
                             </div>
-                            <div class="guest-row">
-                                <label for="children">Trẻ em:</label>
-                                <button type="button" class="decrease" data-target="children">-</button>
-                                <span id="children-count">0</span>
-                                <button type="button" class="increase" data-target="children">+</button>
-                            </div>
-                            <div class="checkbox3 checkbox-round guest-row">
-                                <input type="checkbox" id="checkbox-1" name="pets">
-                                <label for="checkbox-1">
-                                    Thú cưng
-                                </label>
-                            </div>
-                            <button type="button" class="apply-btn">Áp dụng</button>
+                            <button type="button" class="apply-btn btn btn-primary">Áp dụng</button>
                         </div>
                     </div>
                 </div>

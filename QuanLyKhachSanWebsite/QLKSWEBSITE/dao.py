@@ -192,9 +192,9 @@ def TaoPhieu(loaiPhieu):
     return phieu
 
 
-def TaoPhieuDatPhong(idKhachHang, idLoaiPhong, soLuong):
+def TaoPhieuDatPhong(idKhachHang, idLoaiPhong, soLuong, ngayNhanPhong, ngayTraPhong):
     phieu = TaoPhieu(loaiPhieu= '2')
-    phieuDatPhong = models.PhieuDatPhong(id = phieu.id, idLoaiPhong = idLoaiPhong, idKhachHang = idKhachHang, soLuong = soLuong )
+    phieuDatPhong = models.PhieuDatPhong(id = phieu.id, idLoaiPhong = idLoaiPhong, idKhachHang = idKhachHang, soLuong = soLuong, ngayNhanPhong = ngayNhanPhong, ngayTraPhong = ngayTraPhong )
     db.session.add(phieuDatPhong)
     db.session.commit()
     return phieuDatPhong
@@ -222,17 +222,20 @@ def TaoPhieuThuePhong(ngayNhanPhong, ngayTraPhong, idPhong, idKhachHang, idPhieu
     return phieuThuePhong
 
 
-def TimKiem(ngayNhanPhong, ngayTraPhong, soNguoi, soPhong):
+def TimKiem(ngayNhanPhong, ngayTraPhong, soNguoi, soLuong):
     ketQua = []
     listPhong = db.session.query(LoaiPhong).all()
     for p in listPhong:
-        soPhongTrong = KiemTraPhongTrongTheoThoiGian(p.id, ngayNhanPhong, ngayTraPhong)
+        soPhongTrong = SoLuongPhongTrongTheoLoaiPhong(p.id, ngayNhanPhong, ngayTraPhong)
         ketQua.append({
-            'tenLoaiPhong': listPhong.tenLoaiPhong,
-            'donGia': listPhong.donGia,
+            'id': p.id,
+            'tenLoaiPhong': p.tenLoaiPhong,
+            'donGia': p.donGia,
             'soPhongCon': int(soPhongTrong),
+            'soLuongNguoiToiDa': p.luongKhachToiDa,
+            'dienTich': p.dienTich
         })
-
+    return ketQua
 
 
 
