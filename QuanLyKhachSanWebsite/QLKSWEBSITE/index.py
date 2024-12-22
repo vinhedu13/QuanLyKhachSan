@@ -176,5 +176,6 @@ def room_villa():
 
 
 if __name__ == '__main__':
+    from QLKSWEBSITE.admin import *
     with app.app_context():
         app.run(debug=True)
