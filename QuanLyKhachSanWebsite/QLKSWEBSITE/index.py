@@ -371,6 +371,7 @@ def user_load(user_id):
 
 
 if __name__ == '__main__':
+    from QLKSWEBSITE.admin import *
     with app.app_context():
         app.run(debug=True)
 
