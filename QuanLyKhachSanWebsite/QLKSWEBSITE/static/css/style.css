@@ -827,7 +827,8 @@ footer {
     background: linear-gradient(90deg, #0d0d0d, #333333);
     color: #ffffff;
 }
-footer .container{
+
+footer .container {
     background: linear-gradient(90deg, #0d0d0d, #333333);
     border: none;
 
@@ -854,6 +855,51 @@ footer .fab:hover {
     pointer-events: none; /* Ngăn chặn tương tác */
     background-color: rgba(211, 211, 211, 0.5); /* Màu xám nhẹ với độ trong suốt */
     opacity: 0.5; /* Làm mờ div */
+}
+
+body {
+    background-color: #f8f9fa; /* Màu nền nhẹ nhàng */
+    font-size: 1.1rem; /* Tăng kích thước font */
+}
+
+.box {
+    border: 2px solid #007bff; /* Đổi màu viền sang xanh dương */
+    padding: 20px; /* Tăng khoảng cách padding */
+    border-radius: 8px;
+    background-color: #ffffff; /* Màu nền trắng cho box */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hiệu ứng đổ bóng */
+    margin-bottom: 20px; /* Khoảng cách giữa các box */
+    height: auto; /* Để box tự động điều chỉnh chiều cao */
+}
+
+.scrollable-box {
+    max-height: 200px; /* Tăng chiều cao tối đa */
+    overflow-y: auto;
+    padding-right: 15px; /* Khoảng cách cho thanh cuộn */
+}
+
+.dropdown-menu {
+    border-radius: 8px; /* Bo tròn các góc dropdown */
+}
+
+.btn-outline-dark {
+    border-radius: 8px; /* Bo tròn nút */
+    padding: 10px 20px; /* Tăng kích thước padding cho nút */
+    font-size: 1rem; /* Tăng kích thước font cho nút */
+}
+
+.modal-content {
+    border-radius: 8px; /* Bo tròn góc modal */
+}
+
+.form-control {
+    font-size: 1rem; /* Tăng kích thước font cho các input */
+    padding: 10px; /* Tăng kích thước padding cho các input */
+}
+
+.btn-primary, .btn-secondary {
+    padding: 10px 20px; /* Tăng kích thước padding cho nút trong modal */
+    font-size: 1rem; /* Tăng kích thước font cho nút trong modal */
 }
 
 

@@ -2,6 +2,8 @@ import os
 from ctypes.wintypes import DOUBLE
 from datetime import datetime
 from email.policy import default
+
+from flask_login import UserMixin
 from more_itertools.recipes import unique
 from pymysql.constants.FLAG import UNSIGNED
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, column, DOUBLE, DateTime, Enum
@@ -135,14 +137,14 @@ class HoaDon(BaseModel):
     baocaothongke_hoadon = relationship('BaoCaoThongKe_HoaDon', backref='hoadon', lazy=True)
 
 
-class TaiKhoan(BaseModel):
+class TaiKhoan(BaseModel, UserMixin):
     __tablename__ = "taikhoan"
     tenDangNhap = db.Column(db.String(50), nullable=False)
     matKhau = db.Column(db.String(50), nullable=False)
-    sdt = db.Column(db.String(15), nullable=False)
+    sdt = db.Column(db.String(15), nullable=True)
     email = db.Column(db.String(100), nullable=False)
     thoiGianTao = db.Column(db.DateTime, nullable=False, default = datetime.now())
-    idLoaiTaiKhoan = db.Column(db.Integer, ForeignKey('loaitaikhoan.id'), nullable=False, info={"unsigned": True})
+    idLoaiTaiKhoan = db.Column(db.Integer, ForeignKey('loaitaikhoan.id'), nullable=False, info={"unsigned": True}, default= 2)
     idKhachHang = db.Column(db.Integer, ForeignKey('khachhang.id'), nullable=False, info={"unsigned": True}, unique = True)
 
 

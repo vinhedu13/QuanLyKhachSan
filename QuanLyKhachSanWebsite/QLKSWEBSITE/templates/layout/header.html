@@ -10,7 +10,7 @@
                     <a class="nav-link" href="/discounts"><i class="fa-solid fa-gift"></i> Mã giảm giá và ưu đãi</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/find_order"><i class="fa-solid fa-clipboard-list"></i> Tìm kiếm đơn hàng</a>
+                    <a class="nav-link" href="/findOrder"><i class="fa-solid fa-clipboard-list"></i> Tìm kiếm đơn hàng</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -53,6 +53,24 @@
                 </li>
             </ul>
         </div>
-        <a href="\sign_in"><button class="btn btn-hover btn-login"><i class="fa-solid fa-right-to-bracket"></i> Đăng nhập</button></a>
+                {% if current_user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/">
+                        <img src="{{ current_user.avatar }}" width="25" class="rounded-circle" />
+                        Chào {{ current_user.tenDangNhap }}.
+                    </a>
+
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-success" href="/user-logout">Đăng xuất</a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link text-danger" href="/user-login">Đăng nhập</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-success" href="/register">Đăng ký</a>
+                </li>
+                {% endif %}
     </div>
 </nav>

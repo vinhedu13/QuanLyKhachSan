@@ -1,5 +1,6 @@
 import paypalrestsdk
 from flask import Flask
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -8,7 +9,8 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:1313@localhost/qua
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["PAGE_SIZE"] = 10
 db = SQLAlchemy(app)
-
+app.secret_key = 'aiughiakjf'
+login = LoginManager(app=app)
 # Cấu hình PayPal
 paypalrestsdk.configure({
     "mode": "sandbox",  # "sandbox" hoặc "live"

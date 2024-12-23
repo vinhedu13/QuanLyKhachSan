@@ -1,0 +1,118 @@
+{% extends "Layout/base.html" %}
+{% block content %}
+<div class="container my-5 py-4 bg-light rounded shadow">
+    <form class="mb-4" action="lapphieuthuephong" method="get">
+        <h3 class="text-center mb-4 text-primary">Lập Phiếu Thuê Phòng</h3>
+
+        <!-- Loại Phòng -->
+        <div class="mb-4">
+            <label for="loaiphong" class="form-label">Loại phòng</label>
+            {% if phieuDatPhong %}
+            <select name="idLoaiPhong" class="form-select">
+                <option name="idLoaiPhong" value="{{ phieuDatPhong.idLoaiPhong }}" data-max-customers="{{ phieuDatPhong.loaiphong.luongKhachToiDa }}">{{ phieuDatPhong.loaiphong.tenLoaiPhong }}</option>
+            </select>
+            {% else %}
+            <select name="idLoaiPhong" class="form-select">
+                {% for p in loaiPhong %}
+                <option name="idLoaiPhong" value="{{ p.id }}" {% if p.id|int == idLoaiPhong|int %} selected {% endif %} data-max-customers="{{ p.luongKhachToiDa }}">
+                    {{ p.tenLoaiPhong }}
+                </option>
+                {% endfor %}
+            </select>
+            {% endif %}
+        </div>
+
+        <!-- Ngày Trả Phòng -->
+        <div class="mb-4">
+            <label for="ngayTraPhong" class="form-label">Ngày Trả Phòng</label>
+            <input type="datetime-local" id="ngayTraPhong" name="ngayTraPhong" class="form-control" value="{{ thoiGianTra }}" required>
+        </div>
+
+        <!-- Nút Submit -->
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg px-5">Tìm Phòng</button>
+        </div>
+    </form>
+
+    <div class="row">
+        <!-- Danh sách phòng trống -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="p-3 border rounded bg-white shadow-sm">
+                <h5 class="text-center text-secondary mb-3">Chọn Phòng</h5>
+                <div class="scrollable-box" style="max-height: 300px; overflow-y: auto;">
+                    {% for p in phongTrong %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="phong{{ p.id }}" value="{{p.id}}">
+                        <label class="form-check-label" for="phong{{ p.id }}">{{ p.tenPhong }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Danh sách khách hàng -->
+        <div class="col-12 col-md-6 mb-4">
+            <div class="p-3 border rounded bg-white shadow-sm">
+                <h5 class="text-center text-secondary mb-3">Khách Hàng</h5>
+                <ul class="list-unstyled">
+                    
+                </ul>
+                {% if phieuDatPhong %}
+                <button id="addCustomerBtn" class="btn btn-outline-success btn-sm w-100"
+                        onclick="addCustomer({{ phieuDatPhong.loaiphong.luongKhachToiDa }})"
+                        type="button">
+                        Thêm Khách Hàng
+                </button>
+                {% else %}
+                <button id="addCustomerBtn" class="btn btn-outline-success btn-sm w-100"
+                        onclick="addCustomer({{ loaiPhongCheck.luongKhachToiDa }})"
+                        type="button">
+                        Thêm Khách Hàng
+                </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Button Lập Phiếu Thuê -->
+    <div class="text-end mt-4">
+        <form action="/thanhtoan" method="post" id="mainForm">
+            <input type="hidden" name="idLoaiPhong" id="hiddenIdLoaiPhong">
+            <input type="hidden" name="ngayTraPhong" id="hiddenNgayTraPhong">
+            <input type="hidden" name="phongDuocChon" id="hiddenPhongDuocChon">
+            <input type="hidden" name="khachHang" id="hiddenKhachHang">
+            <input type="hidden" name="loaiPhieu" value="phieuThue">
+            <input type="hidden" name="tongTien" value="500000">
+            <button class="btn btn-dark btn-lg px-5" type="button" onclick="submitMainForm()">Lập Phiếu Thuê</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Nhập Thông Tin -->
+<div class="modal fade" id="inputModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">Nhập Thông Tin</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="popupForm">
+                    <div class="mb-3">
+                        <label for="fullName" class="form-label">Họ tên</label>
+                        <input type="text" class="form-control" id="fullName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="identityCard" class="form-label">Căn cước công dân</label>
+                        <input type="text" class="form-control" id="identityCard" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <button type="button" class="btn btn-primary" onclick="saveData()">Lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

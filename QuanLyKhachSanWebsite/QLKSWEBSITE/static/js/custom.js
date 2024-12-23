@@ -81,10 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
     noResultsMessage.textContent = 'Không có đơn hàng nào được tìm thấy'; // Nội dung thông báo
 
     const sampleOrders = [
-        { id: 'ORD001', date: '2024-11-10', status: 'Đang xử lý', value: '500,000 VND' },
-        { id: 'ORD002', date: '2024-11-12', status: 'Đã giao', value: '1,200,000 VND' },
-        { id: 'ORD003', date: '2024-11-13', status: 'Đã hủy', value: '300,000 VND' },
-        { id: 'ORD004', date: '2024-11-14', status: 'Đang xử lý', value: '700,000 VND' }
+        {id: 'ORD001', date: '2024-11-10', status: 'Đang xử lý', value: '500,000 VND'},
+        {id: 'ORD002', date: '2024-11-12', status: 'Đã giao', value: '1,200,000 VND'},
+        {id: 'ORD003', date: '2024-11-13', status: 'Đã hủy', value: '300,000 VND'},
+        {id: 'ORD004', date: '2024-11-14', status: 'Đang xử lý', value: '700,000 VND'}
     ];
 
     // Hàm lọc đơn hàng theo thông tin nhập vào
@@ -121,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const orderId = document.getElementById('order-id').value.trim();
         const orderDate = document.getElementById('order-date').value.trim();
 
-        
 
         const filteredOrders = filterOrders(orderId, orderDate);
         displayResults(filteredOrders);
@@ -168,3 +167,160 @@ document.addEventListener('DOMContentLoaded', () => {
     updateTimer();
     const timerInterval = setInterval(updateTimer, 1000);
 });
+
+let currentField;
+
+function openPopup(field) {
+    currentField = field;
+    const modal = new bootstrap.Modal(document.getElementById('inputModal'));
+    document.getElementById('popupForm').reset(); // Reset form inputs
+    modal.show();
+}
+
+function saveData() {
+    const fullName = document.getElementById('fullName').value;
+    const identityCard = document.getElementById('identityCard').value;
+
+    if (fullName && identityCard) {
+        document.getElementById(`label${currentField}`).innerText = `${fullName} (${identityCard})`;
+        const modal = bootstrap.Modal.getInstance(document.getElementById('inputModal'));
+        modal.hide();
+    } else {
+        alert('Vui lòng nhập đầy đủ thông tin!');
+    }
+}
+
+function deleteCustomer(field) {
+    const label = document.getElementById(`label${field}`);
+    if (label) {
+        label.innerText = `Khách hàng ${field}`; // Reset the label text
+        alert(`Đã xóa thông tin của Khách hàng ${field}`); // Optionally, show a message
+    }
+}
+
+function updateMaxCustomers(luongKhachToiDa) {
+    // Tính số phòng được chọn
+    const selectedRooms = document.querySelectorAll('.form-check-input:checked').length;
+
+    // Lấy giới hạn khách tối đa trên mỗi phòng
+    const maxCustomersPerRoom = luongKhachToiDa;
+
+    // Tính tổng số khách tối đa
+    const maxCustomers = selectedRooms * maxCustomersPerRoom;
+
+    // Hiện hoặc xóa bớt khách hàng nếu cần
+    const customerList = document.querySelectorAll('[id^="label"]');
+    if (customerList.length > maxCustomers) {
+        for (let i = customerList.length; i > maxCustomers; i--) {
+            deleteHTMLCustomer(i); // Gọi hàm xóa khách hàng
+        }
+    }
+    return maxCustomers
+}
+
+document.querySelectorAll('.form-check-input').forEach(input => {
+    input.addEventListener('change', () => {
+        updateMaxCustomers();
+    });
+});
+
+function deleteHTMLCustomer(field) {
+    const label = document.getElementById(`label${field}`);
+    if (label) {
+        label.parentElement.remove(); // Xóa toàn bộ phần tử li của khách hàng
+    }
+}
+
+
+function addCustomer(luongKhachToiDa) {
+    const customerList = document.querySelectorAll('[id^="label"]');
+    const maxCustomers = updateMaxCustomers(luongKhachToiDa); // Gọi lại hàm để tính giới hạn
+
+    if (customerList.length < maxCustomers) {
+        const newCustomerIndex = customerList.length + 1;
+
+        const newCustomerItem = document.createElement('li');
+        newCustomerItem.className = 'mb-3 d-flex align-items-center justify-content-between';
+        newCustomerItem.innerHTML = `
+        <span id="label${newCustomerIndex}">Khách hàng ${newCustomerIndex}</span>
+        <div>
+        <button class="btn btn-outline-primary btn-sm" onclick="openPopup(${newCustomerIndex})">Nhập Thông Tin</button>
+        <button class="btn btn-outline-danger btn-sm ms-2" onclick="deleteCustomer(${newCustomerIndex})">Xóa</button>
+        </div>
+        `;
+
+        document.querySelector('.list-unstyled').appendChild(newCustomerItem);
+    } else {
+        alert('Không thể thêm khách hàng vượt quá số lượng tối đa!');
+    }
+}
+
+
+function submitForm() {
+    document.getElementById('formLoaiPhong').submit(); // Tự động gửi form
+}
+
+function collectFormData() {
+    // Lấy giá trị từ dropdown idLoaiPhong
+    const idLoaiPhong = document.querySelector('[name="idLoaiPhong"]').value;
+    document.getElementById('hiddenIdLoaiPhong').value = idLoaiPhong;
+
+    // Lấy giá trị từ input datetime-local ngayTraPhong
+    const ngayTraPhong = document.querySelector('[name="ngayTraPhong"]').value;
+    document.getElementById('hiddenNgayTraPhong').value = ngayTraPhong;
+
+    // Lấy danh sách phòng được chọn
+    const phongDuocChon = Array.from(document.querySelectorAll('.form-check-input:checked'))
+        .map(input => input.nextElementSibling.innerText.trim())
+        .join(', ');
+    document.getElementById('hiddenPhongDuocChon').value = phongDuocChon;
+
+    // Lấy danh sách khách hàng
+    const khachHang = Array.from(document.querySelectorAll('[id^="label"]'))
+        .map(label => label.innerText.trim())
+        .filter(text => !text.startsWith('Khách hàng ')) // Loại bỏ các khách hàng chưa được nhập thông tin
+        .join('; ');
+    document.getElementById('hiddenKhachHang').value = khachHang;
+}
+
+function submitMainForm() {
+    if (validateForm()) {
+        collectFormData(); // Thu thập dữ liệu trước khi submit
+        document.getElementById('mainForm').submit();
+    }
+}
+
+function validateForm() {
+    // Kiểm tra dropdown idLoaiPhong
+    const idLoaiPhong = document.querySelector('[name="idLoaiPhong"]').value;
+    if (!idLoaiPhong) {
+        alert('Vui lòng chọn loại phòng.');
+        return false;
+    }
+
+    // Kiểm tra input datetime-local ngayTraPhong
+    const ngayTraPhong = document.querySelector('[name="ngayTraPhong"]').value;
+    if (!ngayTraPhong) {
+        alert('Vui lòng chọn ngày trả phòng.');
+        return false;
+    }
+
+    // Kiểm tra ít nhất một phòng được chọn
+    const phongDuocChon = document.querySelectorAll('.form-check-input:checked');
+    if (phongDuocChon.length === 0) {
+        alert('Vui lòng chọn ít nhất một phòng.');
+        return false;
+    }
+
+    // Kiểm tra ít nhất một khách hàng đã được nhập thông tin
+    const khachHang = Array.from(document.querySelectorAll('[id^="label"]'))
+        .some(label => !label.innerText.startsWith('Khách hàng '));
+    if (!khachHang) {
+        alert('Vui lòng nhập thông tin cho ít nhất một khách hàng.');
+        return false;
+    }
+
+    return true; // Tất cả đều hợp lệ
+}
+
+
