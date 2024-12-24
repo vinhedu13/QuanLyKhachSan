@@ -4,7 +4,7 @@ import uuid
 
 from QLKSWEBSITE import app,  login
 import paypalrestsdk
-from flask_login import login_user, logout_user, login_required
+from flask_login import login_user, logout_user, login_required, current_user
 from flask_sqlalchemy.model import Model
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -20,6 +20,7 @@ def index():
 
 @app.route("/timkiem", methods=['GET', 'POST'])
 def timkiem():
+    print(current_user.id)
     ngayNhanPhong = request.form.get('ngayNhanPhong')
     ngayTraPhong = request.form.get('ngayTraPhong')
     ngayNhanPhong = ngayNhanPhong + " 14:00:00"
@@ -31,7 +32,7 @@ def timkiem():
 @app.route("/datphong", methods=["GET", "POST"])
 def datphong():
     if request.method == "POST":
-        idKhachHang = 1
+        idKhachHang = current_user.idKhachHang
         idLoaiPhong = request.form.get("id")
         soLuong = request.form.get("soLuong")
         ngaynhan = request.form.get('ngayNhanPhong')
@@ -40,9 +41,10 @@ def datphong():
         loaiPhong = models.LoaiPhong.query.filter_by(id=idLoaiPhong).first()
         khachHang = models.KhachHang.query.filter_by(id=idKhachHang).first()
         tongTien = int(soLuong) * int(loaiPhong.donGia)
+        print('ấdafafaf')
 
     return render_template("datphong.html", tongTien = tongTien, ngaynhan = ngaynhan,
-                           thoiGianDat = thoiGianDat, idKhachHang = idKhachHang, idLoaiPhong = idLoaiPhong, soLuong = soLuong, ngaytra = ngaytra)
+                           thoiGianDat = thoiGianDat, idKhachHang = idKhachHang, idLoaiPhong = idLoaiPhong, soLuong = soLuong, ngaytra = ngaytra, khachHang = khachHang)
 
 
 @app.route("/thanhtoan", methods=['POST', 'GET'])
