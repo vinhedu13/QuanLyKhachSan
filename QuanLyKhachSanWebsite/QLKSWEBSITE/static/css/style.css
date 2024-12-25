@@ -902,4 +902,24 @@ body {
     font-size: 1rem; /* Tăng kích thước font cho nút trong modal */
 }
 
+.room-card {
+    border-radius: 8px;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
 
+.room-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.room-header i {
+    font-size: 1.2rem;
+}
+
+.btn-small {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+}

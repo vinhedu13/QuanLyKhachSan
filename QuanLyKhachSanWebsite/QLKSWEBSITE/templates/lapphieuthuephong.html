@@ -76,6 +76,18 @@
 
     <!-- Button Lập Phiếu Thuê -->
     <div class="text-end mt-4">
+        {% if phieuDatPhong %}
+        <form action="/thanhtoan" method="post" id="mainForm">
+            <input type="hidden" name="idPhieu" value="{{ phieuDatPhong.id }}">
+            <input type="hidden" name="idLoaiPhong" id="hiddenIdLoaiPhong">
+            <input type="hidden" name="ngayTraPhong" id="hiddenNgayTraPhong">
+            <input type="hidden" name="phongDuocChon" id="hiddenPhongDuocChon">
+            <input type="hidden" name="khachHang" id="hiddenKhachHang">
+            <input type="hidden" name="loaiPhieu" value="phieuThue">
+            <input type="hidden" name="tongTien" value="500000">
+            <button class="btn btn-dark btn-lg px-5" type="button" onclick="submitMainForm()">Lập Phiếu Thuê</button>
+        </form>
+        {% else %}
         <form action="/thanhtoan" method="post" id="mainForm">
             <input type="hidden" name="idLoaiPhong" id="hiddenIdLoaiPhong">
             <input type="hidden" name="ngayTraPhong" id="hiddenNgayTraPhong">
@@ -85,6 +97,7 @@
             <input type="hidden" name="tongTien" value="500000">
             <button class="btn btn-dark btn-lg px-5" type="button" onclick="submitMainForm()">Lập Phiếu Thuê</button>
         </form>
+        {% endif %}
     </div>
 </div>
 

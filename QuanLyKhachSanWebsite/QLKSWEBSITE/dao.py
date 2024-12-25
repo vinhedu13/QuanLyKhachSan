@@ -12,7 +12,7 @@ import hmac
 import hashlib
 from flask import jsonify, request, url_for, redirect, render_template, render_template_string, session
 from idna.idnadata import scripts
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, false
 from QLKSWEBSITE import db, models, app
 from QLKSWEBSITE.models import LoaiPhong
 
@@ -189,6 +189,7 @@ def KiemTraPhongTrongTheoThoiGian(idLoaiPhong, thoiGianNhan, thoiGianTra):
 
     return danh_sach_phong_trong # cái này là trả về id phòng trống
 
+
 def DanhSachPhongTrong(idLoaiPhong, thoiGianNhan, thoiGianTra):
     idPhongTrong = KiemTraPhongTrongTheoThoiGian(idLoaiPhong, thoiGianNhan, thoiGianTra)
     phongTrong = []
@@ -197,6 +198,39 @@ def DanhSachPhongTrong(idLoaiPhong, thoiGianNhan, thoiGianTra):
         if phong:
             phongTrong.append(phong)
     return phongTrong # cái này là trả về danh sách phòng trống
+
+
+# def KiemTraPhongDangSuDung(thoiGianHienTai):
+#     phong_dang_su_dung = (
+#         db.session.query(models.Phong)
+#         .join(models.PhieuThuePhong_Phong, models.Phong.id == models.PhieuThuePhong_Phong.idPhong)
+#         .join(models.PhieuThuePhong, models.PhieuThuePhong_Phong.idPhieuThuePhong == models.PhieuThuePhong.id)
+#         .filter(
+#             and_(
+#                 models.PhieuThuePhong.ngayNhanPhong <= thoiGianHienTai,
+#                 models.PhieuThuePhong.ngayTraPhong > thoiGianHienTai
+#             )
+#         ).distinct()
+#     )
+#     return phong_dang_su_dung.all()  # Trả về danh sách phòng đang sử dụng
+
+
+def GetPhongDangSuDung_ThoiGianTraPhongTuongUng(thoiGianHienTai): # Lấy danh sách phòng đang sử dụng và thời gian trả phòng tương ứng
+    phong_dang_su_dung = (
+        db.session.query(models.Phong, models.PhieuThuePhong)
+        .join(models.PhieuThuePhong_Phong, models.Phong.id == models.PhieuThuePhong_Phong.idPhong)
+        .join(models.PhieuThuePhong, models.PhieuThuePhong_Phong.idPhieuThuePhong == models.PhieuThuePhong.id)
+        .filter(
+            and_(
+                models.PhieuThuePhong.ngayNhanPhong <= thoiGianHienTai,
+                models.PhieuThuePhong.ngayTraPhong > thoiGianHienTai
+            )
+        )
+        .distinct()
+    )
+
+    # Trả về danh sách phòng và ngayNhanPhong tương ứng
+    return phong_dang_su_dung.all()  # Trả về danh sách phòng đang sử dụng cùng với ngayNhanPhong
 
 
 def SoLuongLoaiPhongConTrong(idLoaiPhong, thoiGianNhan, thoiGianTra):
@@ -340,8 +374,21 @@ def TachChuoiBoiDauPhay(chuoi):
     return result_list
 
 
+def KiemTraThanhToan(idPhieu = None):
+    phieu = models.Phieu.query.filter_by(id=idPhieu).first()
+    if phieu.hoaDon.trangThai == 0 or phieu.hoaDon.id == None:
+        return False
+    if phieu.hoaDon.trangThai == 1 and phieu.hoaDon.id:
+        return True
+    return False
+
+
 if __name__ == '__main__':
     with app.app_context():
+        # a = '2024-12-23 15:00:00'
+        # b = KiemTraPhongDangSuDung(a)
+        # for bb in b:
+        #     print(bb.id)
         # a = KiemTraPhongTrongTheoThoiGian(1, '2024-12-01 14:00:00', '2024-12-05 12:00:00')
         # print(a)
         app.run(debug=True)

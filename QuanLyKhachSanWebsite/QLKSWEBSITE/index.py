@@ -2,6 +2,8 @@
 from datetime import datetime, date
 import uuid
 
+from sqlalchemy import and_
+
 from QLKSWEBSITE import app,  login
 import paypalrestsdk
 from flask_login import login_user, logout_user, login_required, current_user
@@ -20,7 +22,6 @@ def index():
 
 @app.route("/timkiem", methods=['GET', 'POST'])
 def timkiem():
-    print(current_user.id)
     ngayNhanPhong = request.form.get('ngayNhanPhong')
     ngayTraPhong = request.form.get('ngayTraPhong')
     ngayNhanPhong = ngayNhanPhong + " 14:00:00"
@@ -30,6 +31,7 @@ def timkiem():
     return render_template('search.html', data = data, soLuong = soLuong, ngayNhanPhong = ngayNhanPhong, ngayTraPhong = ngayTraPhong)
 
 @app.route("/datphong", methods=["GET", "POST"])
+@login_required
 def datphong():
     if request.method == "POST":
         idKhachHang = current_user.idKhachHang
@@ -70,6 +72,8 @@ def thanhtoan():
             if thanhToan == 'momo':
                 return redirect(url_for("momo"))
     if request.method == "POST":
+        session['email'] = request.form.get('email')
+        session['hoTen'] = request.form.get('hoTen')
         session['loaiPhieu'] = request.form.get('loaiPhieu')
         session['tongTien'] = request.form.get('tongTien')
         session['ngaynhan'] = request.form.get('ngaynhan')
@@ -81,9 +85,31 @@ def thanhtoan():
         session['ngayTraPhong'] = request.form.get("ngayTraPhong")
         session['khachHang'] = request.form.get('khachHang')
         session['phongDuocChon'] = request.form.get('phongDuocChon')
+        idPhieu = request.form.get('idPhieu')
         print(session.get('phongDuocChon'))
         print(session.get('khachHang'))
         print('0000000000000')
+        if dao.KiemTraThanhToan(idPhieu) == True:
+            try:
+                phieuDatPhong = models.PhieuDatPhong.query.filter_by(id=idPhieu).first()
+                phieuDatPhong.trangThai = 'Đã nhận phòng'
+                db.session.commit()
+                phieuThuePhong = dao.TaoPhieuThuePhong(id = dao.taoID(), ngayNhanPhong= datetime.now(), ngayTraPhong=session.get('ngayTraPhong'), idPhieuDatPhong=idPhieu)
+                khachHangTrongPhong = dao.TachDanhSachKhachHang(session.get('khachHang'))
+                for k in khachHangTrongPhong:
+                    khachHang = models.KhachHang(tenKhachHang=k[0], cccd=k[1])
+                    khachHang = dao.TaoKhachHang(khachHang)
+                    phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu=phieuThuePhong.id, idKhachHang=khachHang.id)
+                phongDuocChon = session.get('phongDuocChon')
+                phongDuocChon = dao.TachChuoiBoiDauPhay(phongDuocChon)
+                for p in phongDuocChon:
+                    dao.TaoPhieuThuePhong_Phong(idPhieuThuePhong=phieuThuePhong.id, idPhong=p)
+                print(f"Đã cập nhật trạng thái của phiếu {idPhieu} thành 'Đã nhận phòng'")
+                return render_template('lapphieuthuephong_thanhcong.html')
+            except Exception as e:
+                # Rollback nếu có lỗi xảy ra
+                db.session.rollback()
+                print(f"Lỗi khi cập nhật trạng thái: {e}")
 
     return render_template('thanhtoan.html')
 
@@ -137,13 +163,24 @@ def payment_redirect():
     amount = data.get('amount')
     orderId = data.get('orderId')
     if str(session.get('loaiPhieu')) == "phieuDat":
-        dao.TaoPhieuDatPhong(id=int(orderId), idKhachHang=session.get('idKhachHang'),
-                         idLoaiPhong=session.get('idLoaiPhong'),
-                         soLuong=session.get('soLuong'), ngayNhanPhong=session.get('ngaynhan'),
-                         ngayTraPhong=session.get('ngaytra'))
-        hoaDon = models.HoaDon(idPhieu=int(orderId), trangThai=1, tongTien=amount, thoiGianTao=datetime.now())
-        db.session.add(hoaDon)
-        db.session.commit()
+        if current_user.idLoaiTaiKhoan == 2:
+            dao.TaoPhieuDatPhong(id=int(orderId), idKhachHang=session.get('idKhachHang'),
+                             idLoaiPhong=session.get('idLoaiPhong'),
+                             soLuong=session.get('soLuong'), ngayNhanPhong=session.get('ngaynhan'),
+                             ngayTraPhong=session.get('ngaytra'))
+            hoaDon = models.HoaDon(idPhieu=int(orderId), trangThai=1, tongTien=amount, thoiGianTao=datetime.now())
+            db.session.add(hoaDon)
+            db.session.commit()
+        else:
+            khachHang = models.KhachHang(tenKhachHang=session.get('hoTen'), email=session.get('email'))
+            dao.TaoKhachHang(khachHang)
+            dao.TaoPhieuDatPhong(id=int(orderId), idKhachHang= khachHang.id,
+                                 idLoaiPhong=session.get('idLoaiPhong'),
+                                 soLuong=session.get('soLuong'), ngayNhanPhong=session.get('ngaynhan'),
+                                 ngayTraPhong=session.get('ngaytra'))
+            hoaDon = models.HoaDon(idPhieu=int(orderId), trangThai=1, tongTien=amount, thoiGianTao=datetime.now())
+            db.session.add(hoaDon)
+            db.session.commit()
     if str(session.get('loaiPhieu')) == "phieuThue":
         phieuThuePhong = dao.TaoPhieuThuePhong(id = int(orderId), ngayNhanPhong = datetime.now(), ngayTraPhong= session.get('ngayTraPhong'))
         khachHangTrongPhong = dao.TachDanhSachKhachHang(session.get('khachHang'))
@@ -188,22 +225,33 @@ def payment_success():
     print(idPhieu)
     if payment.execute({"payer_id": payer_id}):
         if str(session.get('loaiPhieu')) == "phieuDat":
-            dao.TaoPhieuDatPhong(id=int(idPhieu), idKhachHang=session.get('idKhachHang'),
-                                 idLoaiPhong=session.get('idLoaiPhong'),
-                                 soLuong=session.get('soLuong'), ngayNhanPhong=session.get('ngaynhan'),
-                                 ngayTraPhong=session.get('ngaytra'))
-            hoaDon = models.HoaDon(idPhieu=int(idPhieu), trangThai=1, tongTien=tongTien, thoiGianTao=datetime.now())
-            db.session.add(hoaDon)
-            db.session.commit()
-            # query = (
-            #     db.session.query(models.KhachHang.email)
-            #     .join(models.PhieuDatPhong, models.KhachHang.id == models.PhieuDatPhong.idKhachHang)
-            #     .filter(models.PhieuDatPhong.id == idPhieu)
-            # )
-            # result = query.first()
-            # email = result[0]
-            # subject = "Đặt phòng thành công - Mã đặt phòng: " + idPhieu
-            # dao.GuiEmail(email, str(subject), str(subject))
+            if current_user.idLoaiTaiKhoan == 2:
+                dao.TaoPhieuDatPhong(id=int(idPhieu), idKhachHang=session.get('idKhachHang'),
+                                     idLoaiPhong=session.get('idLoaiPhong'),
+                                     soLuong=session.get('soLuong'), ngayNhanPhong=session.get('ngaynhan'),
+                                     ngayTraPhong=session.get('ngaytra'))
+                hoaDon = models.HoaDon(idPhieu=int(idPhieu), trangThai=1, tongTien=tongTien, thoiGianTao=datetime.now())
+                db.session.add(hoaDon)
+                db.session.commit()
+                # query = (
+                #     db.session.query(models.KhachHang.email)
+                #     .join(models.PhieuDatPhong, models.KhachHang.id == models.PhieuDatPhong.idKhachHang)
+                #     .filter(models.PhieuDatPhong.id == idPhieu)
+                # )
+                # result = query.first()
+                # email = result[0]
+                # subject = "Đặt phòng thành công - Mã đặt phòng: " + idPhieu
+                # dao.GuiEmail(email, str(subject), str(subject))
+            else:
+                khachHang = models.KhachHang(tenKhachHang=session.get('hoTen'), email=session.get('email'))
+                dao.TaoKhachHang(khachHang)
+                dao.TaoPhieuDatPhong(id=int(idPhieu), idKhachHang=khachHang.id,
+                                     idLoaiPhong=session.get('idLoaiPhong'),
+                                     soLuong=session.get('soLuong'), ngayNhanPhong=session.get('ngaynhan'),
+                                     ngayTraPhong=session.get('ngaytra'))
+                hoaDon = models.HoaDon(idPhieu=int(idPhieu), trangThai=1, tongTien=tongTien, thoiGianTao=datetime.now())
+                db.session.add(hoaDon)
+                db.session.commit()
         if str(session.get('loaiPhieu')) == "phieuThue":
             phieuThuePhong = dao.TaoPhieuThuePhong(id=int(idPhieu), ngayNhanPhong=datetime.now(),
                                                    ngayTraPhong=session.get('ngayTraPhong'))
@@ -280,7 +328,7 @@ def room_villa():
     ])
 
 @app.route('/lapphieuthuephong', methods=['POST', 'GET'])
-def kiemtraphongtrong():
+def kiemtrathuephong():
     loaiPhong = models.LoaiPhong.query.all()
     if request.method == 'POST':
         idPhieuDatPhong = request.form.get("idPhieuDatPhong")
@@ -319,6 +367,15 @@ def lapphieuthuephong():
     print(khachHang)
     return render_template('lapphieuthuephong_thanhcong.html')
 
+
+@app.route('/nhanvien', methods=['POST', 'GET'])
+def nhanvien():
+    thoiGianHienTai = '2024-12-23 15:00:00'
+    phongDangSuDung = dao.GetPhongDangSuDung_ThoiGianTraPhongTuongUng(thoiGianHienTai=thoiGianHienTai)
+    loaiPhong = models.LoaiPhong.query.all()
+    phong = models.Phong.query.all()
+    id = request.args.get('id')
+    return render_template('nhanvien.html', phongDangSuDung=phongDangSuDung, loaiPhong = loaiPhong, id = id, phong = phong)
 
 @app.route('/register', methods=['GET', 'POST'])
 def user_register():

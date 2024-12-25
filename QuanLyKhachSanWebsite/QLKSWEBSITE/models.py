@@ -109,7 +109,7 @@ class Phieu(BaseModel):
     thoiGianTao = db.Column(db.DateTime, nullable=False, default = datetime.now())
     phieuThuePhong = relationship('PhieuThuePhong', backref='phieu', lazy=True)
     phieuDatPhong = relationship('PhieuDatPhong', backref='phieu', lazy=True)
-    hoaDon = relationship('HoaDon', backref='phieu', lazy=True)
+    hoaDon = relationship('HoaDon', backref='phieu', lazy=True, uselist=False)
 
 
 class PhieuThuePhong(db.Model):
@@ -135,6 +135,7 @@ class HoaDon(BaseModel):
     idPhieu = db.Column(db.Integer, ForeignKey('phieu.id'), nullable=False, unique = True)
     thoiGianTao = db.Column(db.DateTime, nullable=False, default = datetime.now())
     baocaothongke_hoadon = relationship('BaoCaoThongKe_HoaDon', backref='hoadon', lazy=True)
+    #phieu = relationship('Phieu', back_populates='hoadon', lazy=True)
 
 
 class TaiKhoan(BaseModel, UserMixin):

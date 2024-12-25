@@ -29,8 +29,8 @@
                 </form>
                 {% else %}
                 <form action="/thanhtoan" method="POST">
-                    <input type="text" name="hoTen" required value="{{ khachHang.tenKhachHang }}">
-                    <input type="email" name="email" required value="{{ current_user.email }}">
+                    <input type="text" name="hoTen" required value="{{ khachHang.tenKhachHang }}" readonly>
+                    <input type="email" name="email" required value="{{ current_user.email }}" readonly>
                     <!-- Thông tin ẩn -->
                     <input type="hidden" name="tongTien" value="{{tongTien}}">
                     <input type="hidden" name="ngaynhan" value="{{ngaynhan}}">
