@@ -361,13 +361,15 @@ def GuiEmail(to_email, subject, message):
 def TachDanhSachKhachHang(danhSachKhachHang):
     import re
     input_string = danhSachKhachHang
-    matches = re.findall(r'(\w[\w\s]*?)\s*\((\d+)\)', input_string)
+    # Regex để tách tên khách hàng, CCCD và Loại khách
+    matches = re.findall(r'([\w\s]+?)\s*\((\d+)\)\s*-\s*([\w\s]+)', input_string)
     customers = []
     for match in matches:
-        name = match[0]
-        id_card = match[1]
-        customers.append((name, id_card))
-    return customers #Trả về danh sách khách hàng gồm (Họ tên, cccd)
+        name = match[0].strip()
+        id_card = match[1].strip()
+        customer_type = match[2].strip()
+        customers.append((name, id_card, customer_type))
+    return customers  # Trả về danh sách khách hàng gồm (Họ tên, CCCD, Loại khách)
 
 def TachChuoiBoiDauPhay(chuoi):
     result_list = [item.strip() for item in chuoi.split(",")]
@@ -383,6 +385,9 @@ def KiemTraThanhToan(idPhieu = None):
             return False
         if phieu.hoaDon.trangThai == 1 and phieu.hoaDon.id:
             return True
+
+# def TraPhong():
+
 
 
 if __name__ == '__main__':

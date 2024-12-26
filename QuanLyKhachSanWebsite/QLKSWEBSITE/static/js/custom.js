@@ -171,20 +171,36 @@ document.addEventListener('DOMContentLoaded', () => {
 let currentField;
 
 function openPopup(field) {
+    // Store the current field for later use
     currentField = field;
+
+    // Reset the form inputs
+    document.getElementById('popupForm').reset();
+
+    // Open the modal
     const modal = new bootstrap.Modal(document.getElementById('inputModal'));
-    document.getElementById('popupForm').reset(); // Reset form inputs
     modal.show();
 }
 
 function saveData() {
-    const fullName = document.getElementById('fullName').value;
-    const identityCard = document.getElementById('identityCard').value;
+    // Get the values from the form inputs
+    const fullName = document.getElementById('fullName').value.trim();
+    const identityCard = document.getElementById('identityCard').value.trim();
+    const loaiKhach = document.getElementById('loaiKhach').value;
 
-    if (fullName && identityCard) {
-        document.getElementById(`label${currentField}`).innerText = `${fullName} (${identityCard})`;
+    // Validate inputs
+    if (fullName && identityCard && loaiKhach) {
+        // Update the label of the current field
+        const targetLabel = document.getElementById(`label${currentField}`);
+        if (targetLabel) {
+            targetLabel.innerText = `${fullName} (${identityCard}) - ${loaiKhach}`;
+        }
+
+        // Close the modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('inputModal'));
-        modal.hide();
+        if (modal) {
+            modal.hide();
+        }
     } else {
         alert('Vui lòng nhập đầy đủ thông tin!');
     }

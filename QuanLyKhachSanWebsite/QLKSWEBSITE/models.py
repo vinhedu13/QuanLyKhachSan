@@ -118,6 +118,7 @@ class PhieuThuePhong(db.Model):
     ngayNhanPhong = db.Column(db.DateTime, nullable=False)
     ngayTraPhong = db.Column(db.DateTime, nullable=False)
     idPhieuDatPhong = db.Column(db.Integer, ForeignKey('phieudatphong.id'),nullable=True, unique = True)
+    trangThai = db.Column(db.Enum('Đang sử dụng','Đã trả phòng'), nullable=True)
     phieuThuePhong_Phong = relationship('PhieuThuePhong_Phong', backref='phieuthuephong', lazy=True)
     phieu_khachhang = relationship('Phieu_KhachHang', backref='phieuthuephong', lazy=True)
 

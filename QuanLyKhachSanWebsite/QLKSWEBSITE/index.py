@@ -97,7 +97,8 @@ def thanhtoan():
                 phieuThuePhong = dao.TaoPhieuThuePhong(id = dao.taoID(), ngayNhanPhong= datetime.now(), ngayTraPhong=session.get('ngayTraPhong'), idPhieuDatPhong=idPhieu)
                 khachHangTrongPhong = dao.TachDanhSachKhachHang(session.get('khachHang'))
                 for k in khachHangTrongPhong:
-                    khachHang = models.KhachHang(tenKhachHang=k[0], cccd=k[1])
+                    loaiKhach = models.LoaiKhach.query.filter_by(tenLoaiKhach=k[2]).first()
+                    khachHang = models.KhachHang(tenKhachHang=k[0], cccd=k[1], idLoaiKhach = loaiKhach.id)
                     khachHang = dao.TaoKhachHang(khachHang)
                     phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu=phieuThuePhong.id, idKhachHang=khachHang.id)
                 phongDuocChon = session.get('phongDuocChon')
@@ -185,7 +186,8 @@ def payment_redirect():
         phieuThuePhong = dao.TaoPhieuThuePhong(id = int(orderId), ngayNhanPhong = datetime.now(), ngayTraPhong= session.get('ngayTraPhong'))
         khachHangTrongPhong = dao.TachDanhSachKhachHang(session.get('khachHang'))
         for k in khachHangTrongPhong:
-            khachHang = models.KhachHang(tenKhachHang = k[0], cccd = k[1])
+            loaiKhach = models.LoaiKhach.query.filter_by(tenLoaiKhach=k[2]).first()
+            khachHang = models.KhachHang(tenKhachHang=k[0], cccd=k[1], idLoaiKhach=loaiKhach.id)
             khachHang = dao.TaoKhachHang(khachHang)
             phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu= phieuThuePhong.id, idKhachHang = khachHang.id)
         phongDuocChon = session.get('phongDuocChon')
@@ -257,7 +259,8 @@ def payment_success():
                                                    ngayTraPhong=session.get('ngayTraPhong'))
             khachHangTrongPhong = dao.TachDanhSachKhachHang(session.get('khachHang'))
             for k in khachHangTrongPhong:
-                khachHang = models.KhachHang(tenKhachHang=k[0], cccd=k[1])
+                loaiKhach = models.LoaiKhach.query.filter_by(tenLoaiKhach=k[2]).first()
+                khachHang = models.KhachHang(tenKhachHang=k[0], cccd=k[1], idLoaiKhach=loaiKhach.id)
                 khachHang = dao.TaoKhachHang(khachHang)
                 phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu=phieuThuePhong.id, idKhachHang=khachHang.id)
             phongDuocChon = session.get('phongDuocChon')
@@ -415,6 +418,21 @@ def user_signin():
             err_msg = 'Username hoặc password không chính xác!!!'
 
     return render_template('login.html')
+
+@app.route('/nhanvien-login', methods=['GET', 'POST'])
+def nhanvien_signin():
+    err_msg = ""
+    if request.method.__eq__('POST'):
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        user = utils.check_login(username=username, password=password, role = 3)
+        if user:
+            login_user(user=user)
+        else:
+            err_msg = 'Username hoặc password không chính xác!!!'
+
+    return redirect(url_for('nhanvien'))
 
 
 @app.route('/user-logout')

@@ -9,12 +9,16 @@
             <label for="loaiphong" class="form-label">Loại phòng</label>
             {% if phieuDatPhong %}
             <select name="idLoaiPhong" class="form-select">
-                <option name="idLoaiPhong" value="{{ phieuDatPhong.idLoaiPhong }}" data-max-customers="{{ phieuDatPhong.loaiphong.luongKhachToiDa }}">{{ phieuDatPhong.loaiphong.tenLoaiPhong }}</option>
+                <option name="idLoaiPhong" value="{{ phieuDatPhong.idLoaiPhong }}"
+                        data-max-customers="{{ phieuDatPhong.loaiphong.luongKhachToiDa }}">{{
+                    phieuDatPhong.loaiphong.tenLoaiPhong }}
+                </option>
             </select>
             {% else %}
             <select name="idLoaiPhong" class="form-select">
                 {% for p in loaiPhong %}
-                <option name="idLoaiPhong" value="{{ p.id }}" {% if p.id|int == idLoaiPhong|int %} selected {% endif %} data-max-customers="{{ p.luongKhachToiDa }}">
+                <option name="idLoaiPhong" value="{{ p.id }}" {% if p.id|int== idLoaiPhong|int %} selected {% endif %}
+                        data-max-customers="{{ p.luongKhachToiDa }}">
                     {{ p.tenLoaiPhong }}
                 </option>
                 {% endfor %}
@@ -25,7 +29,8 @@
         <!-- Ngày Trả Phòng -->
         <div class="mb-4">
             <label for="ngayTraPhong" class="form-label">Ngày Trả Phòng</label>
-            <input type="datetime-local" id="ngayTraPhong" name="ngayTraPhong" class="form-control" value="{{ thoiGianTra }}" required>
+            <input type="datetime-local" id="ngayTraPhong" name="ngayTraPhong" class="form-control"
+                   value="{{ thoiGianTra }}" required>
         </div>
 
         <!-- Nút Submit -->
@@ -55,19 +60,19 @@
             <div class="p-3 border rounded bg-white shadow-sm">
                 <h5 class="text-center text-secondary mb-3">Khách Hàng</h5>
                 <ul class="list-unstyled">
-                    
+
                 </ul>
                 {% if phieuDatPhong %}
                 <button id="addCustomerBtn" class="btn btn-outline-success btn-sm w-100"
                         onclick="addCustomer({{ phieuDatPhong.loaiphong.luongKhachToiDa }})"
                         type="button">
-                        Thêm Khách Hàng
+                    Thêm Khách Hàng
                 </button>
                 {% else %}
                 <button id="addCustomerBtn" class="btn btn-outline-success btn-sm w-100"
                         onclick="addCustomer({{ loaiPhongCheck.luongKhachToiDa }})"
                         type="button">
-                        Thêm Khách Hàng
+                    Thêm Khách Hàng
                 </button>
                 {% endif %}
             </div>
@@ -118,6 +123,14 @@
                     <div class="mb-3">
                         <label for="identityCard" class="form-label">Căn cước công dân</label>
                         <input type="text" class="form-control" id="identityCard" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="loaiKhach" class="form-label">Loại khách</label>
+                        <select class="form-select" id="loaiKhach" name="loaiKhach" required>
+                            <option value="" disabled selected>Chọn loại khách</option>
+                            <option value="Nội Địa">Nội Địa</option>
+                            <option value="Nước ngoài">Nước ngoài</option>
+                        </select>
                     </div>
                 </form>
             </div>
