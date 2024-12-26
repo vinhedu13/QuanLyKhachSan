@@ -375,12 +375,14 @@ def TachChuoiBoiDauPhay(chuoi):
 
 
 def KiemTraThanhToan(idPhieu = None):
-    phieu = models.Phieu.query.filter_by(id=idPhieu).first()
-    if phieu.hoaDon.trangThai == 0 or phieu.hoaDon.id == None:
+    if idPhieu == None:
         return False
-    if phieu.hoaDon.trangThai == 1 and phieu.hoaDon.id:
-        return True
-    return False
+    if idPhieu:
+        phieu = models.Phieu.query.filter_by(id=idPhieu).first()
+        if phieu.hoaDon.trangThai == 0 or phieu.hoaDon.id == None:
+            return False
+        if phieu.hoaDon.trangThai == 1 and phieu.hoaDon.id:
+            return True
 
 
 if __name__ == '__main__':

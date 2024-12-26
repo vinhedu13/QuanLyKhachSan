@@ -21,12 +21,23 @@ def add_user(name, username, password, **kwargs):
     db.session.commit()
 
 
-def check_login(username, password):
-    if username and password:
-        password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+# def check_login(username, password, role = None):
+#     if username and password:
+#         password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+#
+#         return TaiKhoan.query.filter(TaiKhoan.tenDangNhap.__eq__(username.strip()),
+#                                  TaiKhoan.matKhau.__eq__(password)).first()
 
-        return TaiKhoan.query.filter(TaiKhoan.tenDangNhap.__eq__(username.strip()),
-                                 TaiKhoan.matKhau.__eq__(password)).first()
+
+def check_login(username, password, role=None):
+    password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
+
+    u = TaiKhoan.query.filter(TaiKhoan.tenDangNhap.__eq__(username.strip()),
+                          TaiKhoan.matKhau.__eq__(password))
+    if role:
+        u = u.filter(TaiKhoan.idLoaiTaiKhoan.__eq__(role))
+
+    return u.first()
 
 
 def get_user_by_id(user_id):
