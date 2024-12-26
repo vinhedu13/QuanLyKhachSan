@@ -131,7 +131,7 @@ CREATE TABLE `hoadon` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `idPhieu` (`idPhieu`),
   CONSTRAINT `hoadon_ibfk_1` FOREIGN KEY (`idPhieu`) REFERENCES `phieu` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +140,7 @@ CREATE TABLE `hoadon` (
 
 LOCK TABLES `hoadon` WRITE;
 /*!40000 ALTER TABLE `hoadon` DISABLE KEYS */;
-INSERT INTO `hoadon` VALUES (2000000,1,1,'2024-12-10 21:14:36',1),(4000000,0,2,'2024-12-10 21:14:36',2),(1000000,1,42,'2024-12-13 19:36:59',4);
+INSERT INTO `hoadon` VALUES (2000000,1,1,'2024-12-10 21:14:36',1),(4000000,0,2,'2024-12-10 21:14:36',2),(1000000,1,42,'2024-12-13 19:36:59',4),(500000,1,43,'2024-12-14 18:12:24',5),(1000000,1,44,'2024-12-14 20:36:26',6),(500000,1,46,'2024-12-17 16:12:59',7),(500000,1,47,'2024-12-17 16:16:07',8),(500000,1,48,'2024-12-17 16:49:01',9),(500000,1,49,'2024-12-17 16:52:25',10),(500000,1,50,'2024-12-20 19:10:28',11),(500000,1,867338584,'2024-12-22 18:36:10',12),(500000,1,889269925,'2024-12-23 00:41:44',13),(500000,1,940504737,'2024-12-23 14:56:21',14),(500000,1,940632772,'2024-12-23 14:57:23',15),(500000,1,39472648,'2024-12-24 18:24:56',16),(500000,1,222504701,'2024-12-26 21:15:16',17),(500000,1,222829605,'2024-12-26 21:20:42',18),(500000,1,249650665,'2024-12-27 04:47:46',19);
 /*!40000 ALTER TABLE `hoadon` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -164,7 +164,7 @@ CREATE TABLE `khachhang` (
   PRIMARY KEY (`id`),
   KEY `idLoaiKhach` (`idLoaiKhach`),
   CONSTRAINT `khachhang_ibfk_1` FOREIGN KEY (`idLoaiKhach`) REFERENCES `loaikhach` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=154542138 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -173,7 +173,7 @@ CREATE TABLE `khachhang` (
 
 LOCK TABLES `khachhang` WRITE;
 /*!40000 ALTER TABLE `khachhang` DISABLE KEYS */;
-INSERT INTO `khachhang` VALUES ('Nguyễn Văn','A','Nam','123456789012','0987654321','nva@example.com','Hà Nội',1,1),('Trần Thị','B','Nữ','234567890123','0978645321','ttb@example.com','TP.HCM',1,2),('Lê Văn','C','Nam','345678901234','0967534210','lvc@example.com','USA',2,3);
+INSERT INTO `khachhang` VALUES ('Nguyễn Văn','A','Nam','123456789012','0987654321','vinh13052004@gmail.com','Hà Nội',1,1),('Trần Thị','B','Nữ','234567890123','0978645321','ttb@example.com','TP.HCM',1,2),('Lê Văn','C','Nam','345678901234','0967534210','lvc@example.com','USA',2,3),('a',NULL,NULL,'1',NULL,NULL,NULL,NULL,154542123),('b',NULL,NULL,'2',NULL,NULL,NULL,NULL,154542124),('a',NULL,NULL,'1',NULL,NULL,NULL,NULL,154542125),('Lê Quang Vinh',NULL,NULL,NULL,NULL,NULL,NULL,NULL,154542128),('nhanvien',NULL,NULL,NULL,NULL,NULL,NULL,NULL,154542129),('ATOI',NULL,NULL,NULL,NULL,'atoi@gmail.com',NULL,NULL,154542130),('ádasdasd',NULL,NULL,'1111111',NULL,NULL,NULL,NULL,154542131),('aaaaaaaaaa',NULL,NULL,'11111',NULL,NULL,NULL,1,154542132),('bbbbbbbb',NULL,NULL,'22222',NULL,NULL,NULL,2,154542133),('asimaruoi',NULL,NULL,'123',NULL,NULL,NULL,1,154542135),('COPHIEUDAT',NULL,NULL,'123',NULL,NULL,NULL,1,154542136),('COPHIEUDAT',NULL,NULL,'321',NULL,NULL,NULL,1,154542137);
 /*!40000 ALTER TABLE `khachhang` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -251,7 +251,7 @@ CREATE TABLE `loaiphong` (
 
 LOCK TABLES `loaiphong` WRITE;
 /*!40000 ALTER TABLE `loaiphong` DISABLE KEYS */;
-INSERT INTO `loaiphong` VALUES ('Phòng đơn',500000,10,1,19,NULL,1),('Phòng đôi',800000,5,2,30,NULL,2),('Phòng VIP',1500000,2,3,45,NULL,3);
+INSERT INTO `loaiphong` VALUES ('Phòng đơn',500000,3,1,19,NULL,1),('Phòng đôi',800000,1,2,30,NULL,2),('Phòng VIP',1500000,1,3,45,NULL,3);
 /*!40000 ALTER TABLE `loaiphong` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,7 +293,7 @@ CREATE TABLE `phieu` (
   PRIMARY KEY (`id`),
   KEY `loaiPhieu` (`loaiPhieu`),
   CONSTRAINT `phieu_ibfk_1` FOREIGN KEY (`loaiPhieu`) REFERENCES `loaiphieu` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=940632773 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -302,37 +302,8 @@ CREATE TABLE `phieu` (
 
 LOCK TABLES `phieu` WRITE;
 /*!40000 ALTER TABLE `phieu` DISABLE KEYS */;
-INSERT INTO `phieu` VALUES (1,'2024-12-10 21:10:28',1),(2,'2024-12-10 21:10:28',2),(2,'2024-12-13 18:51:04',37),(2,'2024-12-13 18:54:47',38),(2,'2024-12-13 18:55:28',39),(2,'2024-12-13 19:18:09',40),(2,'2024-12-13 19:20:21',41),(2,'2024-12-13 19:36:17',42);
+INSERT INTO `phieu` VALUES (1,'2024-12-10 21:10:28',1),(2,'2024-12-10 21:10:28',2),(2,'2024-12-13 18:51:04',37),(2,'2024-12-13 18:54:47',38),(2,'2024-12-13 18:55:28',39),(2,'2024-12-13 19:18:09',40),(2,'2024-12-13 19:20:21',41),(2,'2024-12-13 19:36:17',42),(2,'2024-12-14 18:12:05',43),(2,'2024-12-14 20:36:01',44),(2,'2024-12-17 16:12:37',45),(2,'2024-12-17 16:12:37',46),(2,'2024-12-17 16:15:56',47),(2,'2024-12-17 16:42:04',48),(2,'2024-12-17 16:52:14',49),(2,'2024-12-20 19:10:04',50),(2,'2024-12-24 18:24:56',39472648),(1,'2024-12-25 16:38:09',119489064),(1,'2024-12-25 16:40:54',119654401),(1,'2024-12-26 21:00:49',221623192),(1,'2024-12-26 21:10:18',222206555),(1,'2024-12-26 21:15:16',222504701),(1,'2024-12-26 21:20:42',222829605),(1,'2024-12-27 04:39:08',249116891),(1,'2024-12-27 04:43:30',249386538),(1,'2024-12-27 04:47:46',249650665),(1,'2024-12-27 04:50:25',249824961),(2,'2024-12-22 18:36:10',867338584),(1,'2024-12-23 00:37:55',889036374),(1,'2024-12-23 00:41:44',889269925),(2,'2024-12-23 14:56:21',940504737),(1,'2024-12-23 14:57:23',940632772);
 /*!40000 ALTER TABLE `phieu` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `phieu_khachhang`
---
-
-DROP TABLE IF EXISTS `phieu_khachhang`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `phieu_khachhang` (
-  `idKhachHang` int NOT NULL,
-  `idPhieu` int NOT NULL,
-  `id` int NOT NULL AUTO_INCREMENT,
-  PRIMARY KEY (`id`),
-  KEY `idKhachHang` (`idKhachHang`),
-  KEY `idPhieu` (`idPhieu`),
-  CONSTRAINT `phieu_khachhang_ibfk_1` FOREIGN KEY (`idKhachHang`) REFERENCES `khachhang` (`id`),
-  CONSTRAINT `phieu_khachhang_ibfk_2` FOREIGN KEY (`idPhieu`) REFERENCES `phieuthuephong` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `phieu_khachhang`
---
-
-LOCK TABLES `phieu_khachhang` WRITE;
-/*!40000 ALTER TABLE `phieu_khachhang` DISABLE KEYS */;
-INSERT INTO `phieu_khachhang` VALUES (2,1,1);
-/*!40000 ALTER TABLE `phieu_khachhang` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -356,7 +327,7 @@ CREATE TABLE `phieudatphong` (
   CONSTRAINT `phieudatphong_ibfk_1` FOREIGN KEY (`id`) REFERENCES `phieu` (`id`),
   CONSTRAINT `phieudatphong_ibfk_2` FOREIGN KEY (`idKhachHang`) REFERENCES `khachhang` (`id`),
   CONSTRAINT `phieudatphong_ibfk_3` FOREIGN KEY (`idLoaiPhong`) REFERENCES `loaiphong` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=940504738 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -365,7 +336,7 @@ CREATE TABLE `phieudatphong` (
 
 LOCK TABLES `phieudatphong` WRITE;
 /*!40000 ALTER TABLE `phieudatphong` DISABLE KEYS */;
-INSERT INTO `phieudatphong` VALUES (2,2,2,2,NULL,NULL,NULL),(42,1,1,2,'Chưa nhận phòng','2024-12-13 14:00:00','2024-12-14 12:00:00');
+INSERT INTO `phieudatphong` VALUES (42,1,1,2,'Đã nhận phòng','2024-12-01 14:00:00','2024-12-05 12:00:00'),(50,1,1,1,'Chưa nhận phòng','2024-12-20 14:00:00','2024-12-21 12:00:00'),(39472648,154542130,1,1,'Chưa nhận phòng','2024-12-31 14:00:00','2025-01-01 12:00:00'),(867338584,1,1,1,'Chưa nhận phòng','2024-12-22 14:00:00','2024-12-23 12:00:00'),(940504737,1,1,1,'Đã nhận phòng','2024-12-23 14:00:00','2024-12-25 12:00:00');
 /*!40000 ALTER TABLE `phieudatphong` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -381,11 +352,12 @@ CREATE TABLE `phieuthuephong` (
   `ngayNhanPhong` datetime NOT NULL,
   `ngayTraPhong` datetime NOT NULL,
   `idPhieuDatPhong` int DEFAULT NULL,
+  `trangThai` enum('Đang sử dụng','Đã trả phòng') DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idPhieuDatPhong` (`idPhieuDatPhong`),
   CONSTRAINT `phieuthuephong_ibfk_1` FOREIGN KEY (`id`) REFERENCES `phieu` (`id`),
   CONSTRAINT `phieuthuephong_ibfk_2` FOREIGN KEY (`idPhieuDatPhong`) REFERENCES `phieudatphong` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=940632773 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -394,7 +366,7 @@ CREATE TABLE `phieuthuephong` (
 
 LOCK TABLES `phieuthuephong` WRITE;
 /*!40000 ALTER TABLE `phieuthuephong` DISABLE KEYS */;
-INSERT INTO `phieuthuephong` VALUES (1,'2024-12-01 14:00:00','2024-12-05 12:00:00',NULL);
+INSERT INTO `phieuthuephong` VALUES (1,'2024-12-01 14:00:00','2024-12-05 12:00:00',NULL,NULL),(119489064,'2024-12-25 16:38:09','2024-12-25 12:00:00',940504737,NULL),(222829605,'2024-12-26 21:20:42','2024-12-28 21:20:00',NULL,NULL),(249650665,'2024-12-27 04:47:46','2024-12-29 04:47:00',NULL,NULL),(249824961,'2024-12-27 04:50:25','2024-12-05 12:00:00',42,NULL),(889269925,'2024-12-23 00:41:44','2024-12-23 00:40:00',NULL,NULL),(940632772,'2024-12-23 14:57:23','2024-12-24 14:57:00',NULL,NULL);
 /*!40000 ALTER TABLE `phieuthuephong` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -414,7 +386,7 @@ CREATE TABLE `phieuthuephong_phong` (
   KEY `idPhieuThuePhong` (`idPhieuThuePhong`),
   CONSTRAINT `phieuthuephong_phong_ibfk_1` FOREIGN KEY (`idPhong`) REFERENCES `phong` (`id`),
   CONSTRAINT `phieuthuephong_phong_ibfk_2` FOREIGN KEY (`idPhieuThuePhong`) REFERENCES `phieuthuephong` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -423,8 +395,38 @@ CREATE TABLE `phieuthuephong_phong` (
 
 LOCK TABLES `phieuthuephong_phong` WRITE;
 /*!40000 ALTER TABLE `phieuthuephong_phong` DISABLE KEYS */;
-INSERT INTO `phieuthuephong_phong` VALUES (6,1,2);
+INSERT INTO `phieuthuephong_phong` VALUES (201,1,2),(101,889269925,3),(102,889269925,4),(101,940632772,5),(101,119489064,6),(101,222829605,9),(102,222829605,10),(103,249650665,11),(101,249824961,12),(102,249824961,13);
 /*!40000 ALTER TABLE `phieuthuephong_phong` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `phieuthuephong_phong_khachhang`
+--
+
+DROP TABLE IF EXISTS `phieuthuephong_phong_khachhang`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `phieuthuephong_phong_khachhang` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `idKhachHang` int NOT NULL,
+  `idPhieuThuePhong_Phong` int NOT NULL,
+  `trangThai` enum('Đã nhận phòng','Đã trả phòng') NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fkidKhachHang_idx` (`idKhachHang`),
+  KEY `fkidPhieuThuePhong_Phong_idx` (`idPhieuThuePhong_Phong`),
+  CONSTRAINT `fkidKhachHang` FOREIGN KEY (`idKhachHang`) REFERENCES `khachhang` (`id`),
+  CONSTRAINT `fkidPhieuThuePhong_Phong` FOREIGN KEY (`idPhieuThuePhong_Phong`) REFERENCES `phieuthuephong_phong` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `phieuthuephong_phong_khachhang`
+--
+
+LOCK TABLES `phieuthuephong_phong_khachhang` WRITE;
+/*!40000 ALTER TABLE `phieuthuephong_phong_khachhang` DISABLE KEYS */;
+INSERT INTO `phieuthuephong_phong_khachhang` VALUES (1,154542123,3,'Đã nhận phòng'),(2,154542124,4,'Đã nhận phòng'),(3,154542125,5,'Đã nhận phòng'),(4,154542131,6,'Đã nhận phòng'),(5,154542132,9,'Đã nhận phòng'),(6,154542133,10,'Đã nhận phòng'),(7,2,2,'Đã nhận phòng'),(8,154542135,11,'Đã nhận phòng'),(9,154542136,12,'Đã nhận phòng'),(10,154542137,13,'Đã nhận phòng');
+/*!40000 ALTER TABLE `phieuthuephong_phong_khachhang` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -444,7 +446,7 @@ CREATE TABLE `phong` (
   KEY `idTinhTrangPhong` (`idTinhTrangPhong`),
   CONSTRAINT `phong_ibfk_1` FOREIGN KEY (`idLoaiPhong`) REFERENCES `loaiphong` (`id`),
   CONSTRAINT `phong_ibfk_2` FOREIGN KEY (`idTinhTrangPhong`) REFERENCES `tinhtrangphong` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=302 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -453,7 +455,7 @@ CREATE TABLE `phong` (
 
 LOCK TABLES `phong` WRITE;
 /*!40000 ALTER TABLE `phong` DISABLE KEYS */;
-INSERT INTO `phong` VALUES ('101',1,1,5),('102',1,2,6),('201',2,1,7),('301',3,3,8),('103',1,1,9);
+INSERT INTO `phong` VALUES ('101',1,1,101),('102',1,2,102),('103',1,1,103),('201',2,1,201),('301',3,3,301);
 /*!40000 ALTER TABLE `phong` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -467,7 +469,7 @@ DROP TABLE IF EXISTS `taikhoan`;
 CREATE TABLE `taikhoan` (
   `tenDangNhap` varchar(50) NOT NULL,
   `matKhau` varchar(50) NOT NULL,
-  `sdt` varchar(15) NOT NULL,
+  `sdt` varchar(15) DEFAULT NULL,
   `email` varchar(100) NOT NULL,
   `thoiGianTao` datetime NOT NULL,
   `idLoaiTaiKhoan` int NOT NULL,
@@ -478,7 +480,7 @@ CREATE TABLE `taikhoan` (
   KEY `idLoaiTaiKhoan` (`idLoaiTaiKhoan`),
   CONSTRAINT `taikhoan_ibfk_1` FOREIGN KEY (`idLoaiTaiKhoan`) REFERENCES `loaitaikhoan` (`id`),
   CONSTRAINT `taikhoan_ibfk_2` FOREIGN KEY (`idKhachHang`) REFERENCES `khachhang` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -487,7 +489,7 @@ CREATE TABLE `taikhoan` (
 
 LOCK TABLES `taikhoan` WRITE;
 /*!40000 ALTER TABLE `taikhoan` DISABLE KEYS */;
-INSERT INTO `taikhoan` VALUES ('admin','123','0901234567','admin@example.com','2024-12-10 21:07:19',1,1,1),('customer1','123','0912345678','customer1@example.com','2024-12-10 21:07:19',2,2,2),('employee1','123','0923456789','employee1@example.com','2024-12-10 21:07:19',3,3,3);
+INSERT INTO `taikhoan` VALUES ('admin','123','0901234567','admin@example.com','2024-12-10 21:07:19',1,1,1),('customer1','123','0912345678','customer1@example.com','2024-12-10 21:07:19',2,2,2),('employee1','123','0923456789','employee1@example.com','2024-12-10 21:07:19',3,3,3),('v','c4ca4238a0b923820dcc509a6f75849b',NULL,'lequangvinh13052004@gmail.com','2024-12-23 16:54:10',2,154542128,4),('nhanvien','202cb962ac59075b964b07152d234b70',NULL,'nhanvien@gmail.com','2024-12-24 18:22:36',3,154542129,5);
 /*!40000 ALTER TABLE `taikhoan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -547,4 +549,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-12-13 19:42:25
+-- Dump completed on 2024-12-27  5:10:09
