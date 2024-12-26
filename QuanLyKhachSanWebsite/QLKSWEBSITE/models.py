@@ -8,7 +8,7 @@ from more_itertools.recipes import unique
 from pymysql.constants.FLAG import UNSIGNED
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Boolean, column, DOUBLE, DateTime, Enum
 from sqlalchemy.dialects.mysql import DATETIME
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from QLKSWEBSITE import db, app
 
 
@@ -61,6 +61,7 @@ class KhachHang(BaseModel):
     diaChi = db.Column(db.String(200), nullable=True)
     idLoaiKhach = db.Column(db.Integer, ForeignKey('loaikhach.id'), nullable=True, info={"unsigned": True})
     phieu_khachhang = relationship('Phieu_KhachHang', backref='khachhang', lazy=True)
+    phieuthuephong_phong_khachhang = relationship('PhieuThuePhong_Phong_KhachHang', backref='khachhang', lazy=True)
     taikhoan = relationship('TaiKhoan', backref='khachhang', lazy=True)
     def __str__(self):
         return (
@@ -127,6 +128,7 @@ class PhieuThuePhong_Phong(BaseModel):
     __tablename__ = "phieuthuephong_phong"
     idPhong = db.Column(db.Integer, ForeignKey('phong.id'),nullable=False)
     idPhieuThuePhong = db.Column(db.Integer, ForeignKey('phieuthuephong.id'),nullable=False)
+    phieuthuephong_phong_khachhang = relationship('PhieuThuePhong_Phong_KhachHang', backref = 'phieuthuephong_phong', lazy=True)
 
 
 class HoaDon(BaseModel):
@@ -189,6 +191,11 @@ class LoaiKhach(BaseModel):
     def __str__(self):
         return self.tenLoaiKhach
 
+class PhieuThuePhong_Phong_KhachHang(BaseModel):
+    __tablename__ = "phieuthuephong_phong_khachhang"
+    idKhachHang = db.Column(db.Integer, ForeignKey('khachhang.id'), nullable=False)
+    idPhieuThuePhong_Phong = db.Column(db.Integer, ForeignKey('phieuthuephong_phong.id'), nullable=False)
+    trangThai = db.Column(db.Enum('Đã nhận phòng','Đã trả phòng'), nullable = False, default='Đã nhận phòng')
 
 
 if __name__ == '__main__':

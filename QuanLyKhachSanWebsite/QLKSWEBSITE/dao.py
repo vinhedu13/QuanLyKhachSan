@@ -305,6 +305,12 @@ def TaoPhieu_KhachHang(idKhachHang, idPhieu):
     return phieu_KhachHang
 
 
+def TaoPhieuThuePhong_Phong_KhachHang(phieuThuePhong_Phong_KhachHang):
+    db.session.add(phieuThuePhong_Phong_KhachHang)
+    db.session.commit()
+    return phieuThuePhong_Phong_KhachHang
+
+
 def TaoPhieuThuePhong(id, ngayNhanPhong, ngayTraPhong, idPhieuDatPhong = None):
     phieu = TaoPhieu(loaiPhieu= '1', id=id)
     phieuThuePhong = models.PhieuThuePhong(id = phieu.id, ngayNhanPhong = ngayNhanPhong, ngayTraPhong = ngayTraPhong, idPhieuDatPhong = idPhieuDatPhong)
@@ -361,15 +367,17 @@ def GuiEmail(to_email, subject, message):
 def TachDanhSachKhachHang(danhSachKhachHang):
     import re
     input_string = danhSachKhachHang
-    # Regex để tách tên khách hàng, CCCD và Loại khách
-    matches = re.findall(r'([\w\s]+?)\s*\((\d+)\)\s*-\s*([\w\s]+)', input_string)
+    # Regex để tách tên khách hàng, CCCD, Loại khách và ID phòng
+    matches = re.findall(r'([\w\s]+?)\s*\((\d+)\)\s*-\s*([\w\s]+)\s*-\s*(\d+)', input_string)
     customers = []
     for match in matches:
         name = match[0].strip()
         id_card = match[1].strip()
         customer_type = match[2].strip()
-        customers.append((name, id_card, customer_type))
-    return customers  # Trả về danh sách khách hàng gồm (Họ tên, CCCD, Loại khách)
+        room_id = match[3].strip()
+        customers.append((name, id_card, customer_type, room_id))
+    return customers
+
 
 def TachChuoiBoiDauPhay(chuoi):
     result_list = [item.strip() for item in chuoi.split(",")]

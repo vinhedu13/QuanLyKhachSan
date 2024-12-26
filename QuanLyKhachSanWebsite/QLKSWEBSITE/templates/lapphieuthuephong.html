@@ -42,39 +42,24 @@
     <div class="row">
         <!-- Danh sách phòng trống -->
         <div class="col-12 col-md-6 mb-4">
-            <div class="p-3 border rounded bg-white shadow-sm">
-                <h5 class="text-center text-secondary mb-3">Chọn Phòng</h5>
-                <div class="scrollable-box" style="max-height: 300px; overflow-y: auto;">
-                    {% for p in phongTrong %}
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="phong{{ p.id }}" value="{{p.id}}">
-                        <label class="form-check-label" for="phong{{ p.id }}">{{ p.tenPhong }}</label>
-                    </div>
-                    {% endfor %}
+        <div class="p-3 border rounded bg-white shadow-sm">
+            <h5 class="text-center text-secondary mb-3">Chọn Phòng</h5>
+            <div class="scrollable-box" style="max-height: 300px; overflow-y: auto;">
+                {% for p in phongTrong %}
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="phong{{ p.id }}" value="{{p.id}}">
+                    <label class="form-check-label" for="phong{{ p.id }}">{{ p.tenPhong }}</label>
                 </div>
+                {% endfor %}
             </div>
         </div>
-
-        <!-- Danh sách khách hàng -->
+        <!-- Khu vực danh sách khách hàng -->
         <div class="col-12 col-md-6 mb-4">
             <div class="p-3 border rounded bg-white shadow-sm">
-                <h5 class="text-center text-secondary mb-3">Khách Hàng</h5>
-                <ul class="list-unstyled">
-
-                </ul>
-                {% if phieuDatPhong %}
-                <button id="addCustomerBtn" class="btn btn-outline-success btn-sm w-100"
-                        onclick="addCustomer({{ phieuDatPhong.loaiphong.luongKhachToiDa }})"
-                        type="button">
-                    Thêm Khách Hàng
-                </button>
-                {% else %}
-                <button id="addCustomerBtn" class="btn btn-outline-success btn-sm w-100"
-                        onclick="addCustomer({{ loaiPhongCheck.luongKhachToiDa }})"
-                        type="button">
-                    Thêm Khách Hàng
-                </button>
-                {% endif %}
+                <h5 class="text-center text-secondary mb-3">Danh sách Khách hàng</h5>
+                <div id="customer-section">
+                    <!-- Khu vực khách hàng sẽ được thêm vào đây -->
+                </div>
             </div>
         </div>
     </div>

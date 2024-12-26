@@ -100,11 +100,10 @@ def thanhtoan():
                     loaiKhach = models.LoaiKhach.query.filter_by(tenLoaiKhach=k[2]).first()
                     khachHang = models.KhachHang(tenKhachHang=k[0], cccd=k[1], idLoaiKhach = loaiKhach.id)
                     khachHang = dao.TaoKhachHang(khachHang)
-                    phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu=phieuThuePhong.id, idKhachHang=khachHang.id)
-                phongDuocChon = session.get('phongDuocChon')
-                phongDuocChon = dao.TachChuoiBoiDauPhay(phongDuocChon)
-                for p in phongDuocChon:
-                    dao.TaoPhieuThuePhong_Phong(idPhieuThuePhong=phieuThuePhong.id, idPhong=p)
+                    phieuThuePhong_Phong = dao.TaoPhieuThuePhong_Phong(idPhieuThuePhong = phieuThuePhong.id, idPhong = k[3])
+                    #phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu=phieuThuePhong.id, idKhachHang=khachHang.id)
+                    phieuThuePhong_Phong_KhachHang = models.PhieuThuePhong_Phong_KhachHang(idKhachHang=khachHang.id, idPhieuThuePhong_Phong = phieuThuePhong_Phong.id)
+                    dao.TaoPhieuThuePhong_Phong_KhachHang(phieuThuePhong_Phong_KhachHang)
                 print(f"Đã cập nhật trạng thái của phiếu {idPhieu} thành 'Đã nhận phòng'")
                 return render_template('lapphieuthuephong_thanhcong.html')
             except Exception as e:
@@ -189,11 +188,11 @@ def payment_redirect():
             loaiKhach = models.LoaiKhach.query.filter_by(tenLoaiKhach=k[2]).first()
             khachHang = models.KhachHang(tenKhachHang=k[0], cccd=k[1], idLoaiKhach=loaiKhach.id)
             khachHang = dao.TaoKhachHang(khachHang)
-            phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu= phieuThuePhong.id, idKhachHang = khachHang.id)
-        phongDuocChon = session.get('phongDuocChon')
-        phongDuocChon = dao.TachChuoiBoiDauPhay(phongDuocChon)
-        for p in phongDuocChon:
-            dao.TaoPhieuThuePhong_Phong(idPhieuThuePhong= phieuThuePhong.id, idPhong = p)
+            phieuThuePhong_Phong = dao.TaoPhieuThuePhong_Phong(idPhieuThuePhong=phieuThuePhong.id, idPhong=k[3])
+            # phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu=phieuThuePhong.id, idKhachHang=khachHang.id)
+            phieuThuePhong_Phong_KhachHang = models.PhieuThuePhong_Phong_KhachHang(idKhachHang=khachHang.id,
+                                                                                   idPhieuThuePhong_Phong=phieuThuePhong_Phong.id)
+            dao.TaoPhieuThuePhong_Phong_KhachHang(phieuThuePhong_Phong_KhachHang)
         hoaDon = models.HoaDon(idPhieu=int(orderId), trangThai=1, tongTien=amount, thoiGianTao=datetime.now())
         db.session.add(hoaDon)
         db.session.commit()
@@ -262,11 +261,11 @@ def payment_success():
                 loaiKhach = models.LoaiKhach.query.filter_by(tenLoaiKhach=k[2]).first()
                 khachHang = models.KhachHang(tenKhachHang=k[0], cccd=k[1], idLoaiKhach=loaiKhach.id)
                 khachHang = dao.TaoKhachHang(khachHang)
-                phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu=phieuThuePhong.id, idKhachHang=khachHang.id)
-            phongDuocChon = session.get('phongDuocChon')
-            phongDuocChon = dao.TachChuoiBoiDauPhay(phongDuocChon)
-            for p in phongDuocChon:
-                dao.TaoPhieuThuePhong_Phong(idPhieuThuePhong=phieuThuePhong.id, idPhong=p)
+                phieuThuePhong_Phong = dao.TaoPhieuThuePhong_Phong(idPhieuThuePhong=phieuThuePhong.id, idPhong=k[3])
+                # phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu=phieuThuePhong.id, idKhachHang=khachHang.id)
+                phieuThuePhong_Phong_KhachHang = models.PhieuThuePhong_Phong_KhachHang(idKhachHang=khachHang.id,
+                                                                                       idPhieuThuePhong_Phong=phieuThuePhong_Phong.id)
+                dao.TaoPhieuThuePhong_Phong_KhachHang(phieuThuePhong_Phong_KhachHang)
             hoaDon = models.HoaDon(idPhieu=int(idPhieu), trangThai=1, tongTien=tongTien, thoiGianTao=datetime.now())
             db.session.add(hoaDon)
             db.session.commit()
@@ -446,6 +445,32 @@ def user_load(user_id):
     return utils.get_user_by_id(user_id=user_id)
 
 
+@app.route('/test')
+def test():
+    loaiPhong = models.LoaiPhong.query.all()
+    idLoaiPhong = request.args.get('idLoaiPhong', 1)
+    loaiPhongCheck = models.LoaiPhong.query.get(idLoaiPhong)
+    thoiGianNhan = datetime.now()
+    thoiGianTra = request.args.get('ngayTraPhong')
+    if thoiGianTra == None:
+        thoiGianTra = datetime.now()
+    if thoiGianTra:
+        phongTrong = dao.DanhSachPhongTrong(idLoaiPhong, thoiGianNhan, thoiGianTra)
+    return render_template('test.html', loaiPhong=loaiPhong, idLoaiPhong=idLoaiPhong,
+                           phongTrong=phongTrong, thoiGianTra=thoiGianTra, loaiPhongCheck=loaiPhongCheck)
+
+
+# @app.route('/submit-customers', methods=['POST'])
+# def submit_customers():
+#     data = request.json  # Nhận dữ liệu JSON từ client
+#     # Xử lý dữ liệu (lưu vào cơ sở dữ liệu, etc.)
+#     for room in data:
+#         room_id = room['roomId']
+#         customers = room['customers']
+#         # Xử lý từng khách hàng, ví dụ lưu vào cơ sở dữ liệu
+#         print(f"Room ID: {room_id}, Customers: {customers}")
+#
+#     return jsonify({"message": "Dữ liệu đã được xử lý thành công!"}), 200
 
 if __name__ == '__main__':
     from QLKSWEBSITE.admin import *

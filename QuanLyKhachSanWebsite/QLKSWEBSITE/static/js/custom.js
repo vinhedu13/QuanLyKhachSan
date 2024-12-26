@@ -168,51 +168,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const timerInterval = setInterval(updateTimer, 1000);
 });
 
-let currentField;
-
-function openPopup(field) {
-    // Store the current field for later use
-    currentField = field;
-
-    // Reset the form inputs
-    document.getElementById('popupForm').reset();
-
-    // Open the modal
-    const modal = new bootstrap.Modal(document.getElementById('inputModal'));
-    modal.show();
-}
-
-function saveData() {
-    // Get the values from the form inputs
-    const fullName = document.getElementById('fullName').value.trim();
-    const identityCard = document.getElementById('identityCard').value.trim();
-    const loaiKhach = document.getElementById('loaiKhach').value;
-
-    // Validate inputs
-    if (fullName && identityCard && loaiKhach) {
-        // Update the label of the current field
-        const targetLabel = document.getElementById(`label${currentField}`);
-        if (targetLabel) {
-            targetLabel.innerText = `${fullName} (${identityCard}) - ${loaiKhach}`;
-        }
-
-        // Close the modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('inputModal'));
-        if (modal) {
-            modal.hide();
-        }
-    } else {
-        alert('Vui lòng nhập đầy đủ thông tin!');
-    }
-}
-
-function deleteCustomer(field) {
-    const label = document.getElementById(`label${field}`);
-    if (label) {
-        label.innerText = `Khách hàng ${field}`; // Reset the label text
-        alert(`Đã xóa thông tin của Khách hàng ${field}`); // Optionally, show a message
-    }
-}
 
 function updateMaxCustomers(luongKhachToiDa) {
     // Tính số phòng được chọn
@@ -234,40 +189,10 @@ function updateMaxCustomers(luongKhachToiDa) {
     return maxCustomers
 }
 
-document.querySelectorAll('.form-check-input').forEach(input => {
-    input.addEventListener('change', () => {
-        updateMaxCustomers();
-    });
-});
-
 function deleteHTMLCustomer(field) {
     const label = document.getElementById(`label${field}`);
     if (label) {
         label.parentElement.remove(); // Xóa toàn bộ phần tử li của khách hàng
-    }
-}
-
-
-function addCustomer(luongKhachToiDa) {
-    const customerList = document.querySelectorAll('[id^="label"]');
-    const maxCustomers = updateMaxCustomers(luongKhachToiDa); // Gọi lại hàm để tính giới hạn
-
-    if (customerList.length < maxCustomers) {
-        const newCustomerIndex = customerList.length + 1;
-
-        const newCustomerItem = document.createElement('li');
-        newCustomerItem.className = 'mb-3 d-flex align-items-center justify-content-between';
-        newCustomerItem.innerHTML = `
-        <span id="label${newCustomerIndex}">Khách hàng ${newCustomerIndex}</span>
-        <div>
-        <button class="btn btn-outline-primary btn-sm" onclick="openPopup(${newCustomerIndex})">Nhập Thông Tin</button>
-        <button class="btn btn-outline-danger btn-sm ms-2" onclick="deleteCustomer(${newCustomerIndex})">Xóa</button>
-        </div>
-        `;
-
-        document.querySelector('.list-unstyled').appendChild(newCustomerItem);
-    } else {
-        alert('Không thể thêm khách hàng vượt quá số lượng tối đa!');
     }
 }
 
@@ -291,8 +216,8 @@ function collectFormData() {
         .join(', ');
     document.getElementById('hiddenPhongDuocChon').value = phongDuocChon;
 
-    // Lấy danh sách khách hàng
-    const khachHang = Array.from(document.querySelectorAll('[id^="label"]'))
+    // Lấy tất cả các span của khách hàng
+    const khachHang = Array.from(document.querySelectorAll('[id^="span-customer-"]'))
         .map(label => label.innerText.trim())
         .filter(text => !text.startsWith('Khách hàng ')) // Loại bỏ các khách hàng chưa được nhập thông tin
         .join('; ');
@@ -329,7 +254,7 @@ function validateForm() {
     }
 
     // Kiểm tra ít nhất một khách hàng đã được nhập thông tin
-    const khachHang = Array.from(document.querySelectorAll('[id^="label"]'))
+    const khachHang = Array.from(document.querySelectorAll('[id^="span-customer-"]'))
         .some(label => !label.innerText.startsWith('Khách hàng '));
     if (!khachHang) {
         alert('Vui lòng nhập thông tin cho ít nhất một khách hàng.');
@@ -339,4 +264,174 @@ function validateForm() {
     return true; // Tất cả đều hợp lệ
 }
 
+const roomCustomerData = {}; // Lưu trữ khách hàng theo phòng
 
+// Tạo hoặc cập nhật danh sách khách hàng cho từng phòng
+function updateCustomerSection(luongKhachToiDa) {
+    const selectedRooms = document.querySelectorAll('.form-check-input:checked');
+    const customerSection = document.getElementById('customer-section');
+
+    // Xóa các danh sách cũ
+    customerSection.innerHTML = '';
+
+    // Tạo danh sách khách hàng cho từng phòng được chọn
+    selectedRooms.forEach((room) => {
+        const roomId = room.value;
+
+        // Khởi tạo dữ liệu khách hàng nếu chưa tồn tại
+        if (!roomCustomerData[roomId]) {
+            roomCustomerData[roomId] = [];
+        }
+
+        // Tạo div riêng cho mỗi phòng
+        const roomDiv = document.createElement('div');
+        roomDiv.className = 'mb-4';
+        roomDiv.id = `room-customers-${roomId}`;
+        roomDiv.innerHTML = `
+                <h6 class="text-secondary">Phòng ${roomId}</h6>
+                <ul class="list-unstyled" id="customer-list-${roomId}">
+                    ${roomCustomerData[roomId].map((_, index) => generateCustomerHTML(roomId, index + 1)).join('')}
+                </ul>
+                <button class="btn btn-primary btn-sm mt-2" onclick="addCustomer(${luongKhachToiDa}, ${roomId})">
+                    Thêm Khách Hàng
+                </button>
+            `;
+        customerSection.appendChild(roomDiv);
+    });
+}
+
+// Thêm khách hàng vào danh sách của một phòng
+function addCustomer(luongKhachToiDa, roomId) {
+    const currentCustomers = roomCustomerData[roomId] || [];
+
+    if (currentCustomers.length < luongKhachToiDa) {
+        const newCustomerIndex = currentCustomers.length + 1;
+        currentCustomers.push(`Khách hàng ${newCustomerIndex}`);
+
+        const customerList = document.getElementById(`customer-list-${roomId}`);
+        const newCustomerItem = document.createElement('li');
+        // newCustomerItem.className = 'mb-3 d-flex align-items-center justify-content-between';
+        // newCustomerItem.id = `customer-${roomId}-${newCustomerIndex}`;
+        newCustomerItem.innerHTML = generateCustomerHTML(roomId, newCustomerIndex);
+
+        customerList.appendChild(newCustomerItem);
+    } else {
+        alert(`Không thể thêm quá ${luongKhachToiDa} khách hàng vào phòng này!`);
+    }
+}
+
+// Xóa khách hàng
+function deleteCustomer(roomId, customerIndex) {
+    // Xóa khách hàng khỏi dữ liệu
+    if (roomCustomerData[roomId]) {
+        roomCustomerData[roomId].splice(customerIndex - 1, 1);
+    }
+
+    // Lấy danh sách khách hàng hiện tại
+    const customerList = document.getElementById(`customer-list-${roomId}`);
+
+    // Làm mới giao diện danh sách khách hàng
+    customerList.innerHTML = roomCustomerData[roomId]
+        .map((_, index) => generateCustomerHTML(roomId, index + 1)) // Tạo lại danh sách với chỉ mục chính xác
+        .join('');
+}
+
+
+// Tạo HTML cho khách hàng
+function generateCustomerHTML(roomId, customerIndex) {
+    return `
+            <li class="mb-3 d-flex align-items-center justify-content-between" id="customer-${roomId}-${customerIndex}">
+                <span id="span-customer-${roomId}-${customerIndex}">Khách hàng ${customerIndex}</span>
+                <div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="openPopup(${roomId}, ${customerIndex})">Nhập Thông Tin</button>
+                    <button class="btn btn-outline-danger btn-sm ms-2" onclick="deleteCustomer(${roomId}, ${customerIndex})">Xóa</button>
+                </div>
+            </li>
+        `;
+}
+
+// Lắng nghe sự kiện thay đổi phòng
+document.querySelectorAll('.form-check-input').forEach(input => {
+    input.addEventListener('change', () => {
+        const maxCustomersPerRoom = 4; // Ví dụ số khách tối đa mỗi phòng
+        updateCustomerSection(maxCustomersPerRoom);
+    });
+});
+
+// // Hàm submit dữ liệu khách hàng
+// function submitCustomerData() {
+//     const customerData = Object.entries(roomCustomerData).map(([roomId, customers]) => {
+//         return {
+//             roomId: roomId,
+//             customers: customers.map((customer, index) => ({
+//                 name: customer,
+//                 index: index + 1
+//             }))
+//         };
+//     });
+//
+//     // Gửi dữ liệu đến server
+//     fetch('/submit-customers', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json'
+//         },
+//         body: JSON.stringify(customerData)
+//     })
+//         .then(response => {
+//             if (response.ok) {
+//                 alert('Dữ liệu khách hàng đã được gửi thành công!');
+//             } else {
+//                 alert('Đã xảy ra lỗi khi gửi dữ liệu.');
+//             }
+//         })
+//         .catch(error => {
+//             console.error('Lỗi:', error);
+//             alert('Đã xảy ra lỗi khi gửi dữ liệu.');
+//         });
+// }
+
+// Tạo biến toàn cục để lưu thông tin trường hiện tại
+let currentField = null;
+
+// Mở popup và điền dữ liệu nếu có
+function openPopup(roomId, customerIndex) {
+    currentField = {roomId, customerIndex}; // Lưu trữ thông tin hiện tại
+
+    // Lấy dữ liệu khách hàng hiện tại
+    const customerData = roomCustomerData[roomId] && roomCustomerData[roomId][customerIndex - 1];
+    document.getElementById('popupForm').reset();
+
+    // Mở modal
+    const modal = new bootstrap.Modal(document.getElementById('inputModal'));
+    modal.show();
+}
+
+// Hàm lưu dữ liệu
+function saveData() {
+    // Lấy giá trị từ các trường nhập liệu
+    const fullName = document.getElementById('fullName').value.trim();
+    const identityCard = document.getElementById('identityCard').value.trim();
+    const loaiKhach = document.getElementById('loaiKhach').value;
+
+    // Kiểm tra tính hợp lệ của các trường
+    if (fullName && identityCard && loaiKhach) {
+        const {roomId, customerIndex} = currentField; // Lấy thông tin phòng và chỉ số khách hàng
+
+        // Cập nhật dữ liệu khách hàng
+        roomCustomerData[roomId][customerIndex - 1] = `${fullName} - ${identityCard} - ${loaiKhach}`;
+
+        // Cập nhật nhãn của khách hàng trong danh sách
+        const targetLabel = document.getElementById(`span-customer-${roomId}-${customerIndex}`);
+        if (targetLabel) {
+            targetLabel.innerText = `${fullName} (${identityCard}) - ${loaiKhach} - ${roomId}`;
+        }
+        // Đóng modal
+        const modal = bootstrap.Modal.getInstance(document.getElementById('inputModal'));
+        if (modal) {
+            modal.hide();
+        }
+    } else {
+        alert('Vui lòng nhập đầy đủ thông tin!');
+    }
+}
