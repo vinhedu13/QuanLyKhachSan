@@ -53,6 +53,7 @@
                 {% endfor %}
             </div>
         </div>
+    </div>
         <!-- Khu vực danh sách khách hàng -->
         <div class="col-12 col-md-6 mb-4">
             <div class="p-3 border rounded bg-white shadow-sm">
@@ -62,10 +63,9 @@
                 </div>
             </div>
         </div>
-    </div>
 
     <!-- Button Lập Phiếu Thuê -->
-    <div class="text-end mt-4">
+    <div class="d-flex justify-content-end mt-4 me-4">
         {% if phieuDatPhong %}
         <form action="/thanhtoan" method="post" id="mainForm">
             <input type="hidden" name="idPhieu" value="{{ phieuDatPhong.id }}">
