@@ -1,4 +1,3 @@
-
 from datetime import datetime, date
 import uuid
 
@@ -14,6 +13,9 @@ import dao
 from flask import render_template, request, redirect, url_for, jsonify, flash, session
 from QLKSWEBSITE import app, db, models, utils
 from QLKSWEBSITE.dao import paypal, TaoPhieuDatPhong, taoID
+from flask import render_template, request, redirect, url_for, flash
+import utils
+from werkzeug.security import generate_password_hash
 
 
 @app.route("/")
@@ -383,40 +385,43 @@ def nhanvien():
 def user_register():
     err_msg = ""
     if request.method.__eq__('POST'):
-        name = request.form.get('name')
-        username = request.form.get('username')
-        password = request.form.get('password')
-        email = request.form.get('email')
-        confirm = request.form.get('confirm')
+        name = request.form.get('name').strip()
+        email = request.form.get('email').strip()
+        password = request.form.get('password').strip()
+        confirm = request.form.get('comfirm').strip()
 
-        try:
-            if password.strip().__eq__(confirm.strip()):
-                utils.add_user(name=name, username=username, password=password, email=email)
-                return redirect(url_for('user_signin'))
-            else:
-                err_msg = 'Mật khẩu không khớp!!!'
-        except Exception as ex:
-            err_msg = 'He thong dang co loi: ' + str(ex)
+        if not name or not email or not password or not confirm:
+            err_msg = "Vui lòng điền đầy đủ tất cả các trường!"
+        elif password != confirm:
+            err_msg = "Mật khẩu không khớp!"
+        else:
+            try:
+                hashed_password = generate_password_hash(password)
+                utils.add_user(name=name, password=hashed_password, email=email)
+                flash("Tạo tài khoản thành công! Vui lòng đăng nhập.", "success")
+                return redirect(url_for('sign_up'))
+            except Exception as ex:
+                # Ghi lỗi để theo dõi (sử dụng logging trong sản phẩm thực tế)
+                print(f"Lỗi: {ex}")
+                err_msg = "Hệ thống gặp lỗi, vui lòng thử lại sau."
 
-
-    return render_template('register.html', err_msg=err_msg)
-
+    return render_template('index.html', err_msg=err_msg)
 
 @app.route('/user-login', methods=['GET', 'POST'])
 def user_signin():
     err_msg = ""
     if request.method.__eq__('POST'):
-        username = request.form.get('username')
+        email = request.form.get('email')
         password = request.form.get('password')
 
-        user = utils.check_login(username=username, password=password)
+        user = utils.check_login(email=email, password=password)
         if user:
             login_user(user=user)
             return redirect(url_for('index'))
         else:
             err_msg = 'Username hoặc password không chính xác!!!'
 
-    return render_template('login.html')
+    return render_template('sign_up.html')
 
 @app.route('/nhanvien-login', methods=['GET', 'POST'])
 def nhanvien_signin():

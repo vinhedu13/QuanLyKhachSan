@@ -19,25 +19,30 @@
     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 </head>
 <body>
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <ul class="alert-list">
+        {% for category, message in messages %}
+            <li class="alert alert-{{ category }}">{{ message }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+{% endwith %}
 <div class="container" id="container">
     <div class="form-container sign-up">
-        <form>
+        <form method="post" action="{{ url_for('user_register') }}">
             <h1>Tạo tài khoản</h1>
-            <div class="social-icons">
-                <a href="#" class="icons"><i class="bx bxl-google"></i></a>
-                <a href="#" class="icons"><i class="bx bxl-facebook"></i></a>
-                <a href="#" class="icons"><i class="bx bxl-github"></i></a>
-                <a href="#" class="icons"><i class="bx bxl-linkedin"></i></a>
-            </div>
+
             <span>Đăng kí với E-mail</span>
-            <input type="text" placeholder="Tên">
-            <input type="email" placeholder="Nhập email">
-            <input tyoe="password" placeholder="Nhập mật khẩu">
-            <button>Đăng Ký</button>
+            <input type="text" id="name" name="name" placeholder="Tên" required>
+            <input type="email" id="email" name="email" placeholder="Nhập email">
+            <input type="password" id="pass" name="password" placeholder="Nhập mật khẩu">
+            <input type="password" id="pass-comfirm" name="comfirm" placeholder="Nhập lại mật khẩu">
+            <buton><input type="submit" value="Đăng ký" class="btn btn-danger"></buton>
         </form>
     </div>
     <div class="form-container sign-in">
-        <form>
+        <form method="post" action="{{ url_for('user_signin') }}">
             <h1>Đăng nhập</h1>
             <div class="social-icons">
                 <a href="#" class="icons"><i class="bx bxl-google"></i></a>
@@ -46,7 +51,7 @@
                 <a href="#" class="icons"><i class="bx bxl-linkedin"></i></a>
             </div>
             <span>Đăng nhập với E-mail và password</span>
-            <input type="email" placeholder="Nhập email">
+            <input type="email" placeholder="Nhập email" required>
             <input tyoe="password" placeholder="Nhập mật khẩu">
             <button>Đăng Nhập</button>
         </form>

@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 # Cấu hình thông số kết nối SQL
-app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:1313@localhost:3306/quanlykhachsan?charset=utf8mb4"
+app.config["SQLALCHEMY_DATABASE_URI"] = "mysql+pymysql://root:Admin%40123@localhost:3306/quanlykhachsan?charset=utf8mb4"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["PAGE_SIZE"] = 10
 db = SQLAlchemy(app)
