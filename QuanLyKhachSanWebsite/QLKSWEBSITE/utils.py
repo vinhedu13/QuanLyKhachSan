@@ -9,19 +9,14 @@ import hashlib
 
 
 def add_user(name, password, **kwargs):
-    try:
-
         if not name or not password:
             raise ValueError("Tên và mật khẩu không được để trống!")
 
-
         hashed_password = generate_password_hash(password.strip())
-
 
         khachHang = KhachHang(tenKhachHang=name.strip())
         db.session.add(khachHang)
         db.session.flush()  # Đảm bảo lấy được id của KhachHang sau khi thêm
-
 
         user = TaiKhoan(
             idKhachHang=khachHang.id,
@@ -47,7 +42,7 @@ def check_login(email, password, role=None):
     password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
 
     u = TaiKhoan.query.filter(TaiKhoan.email.__eq__(email.strip()),
-                          TaiKhoan.matKhau.__eq__(password))
+                              TaiKhoan.matKhau.__eq__(password))
     if role:
         u = u.filter(TaiKhoan.idLoaiTaiKhoan.__eq__(role))
 
