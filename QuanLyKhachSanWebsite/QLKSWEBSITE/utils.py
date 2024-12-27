@@ -10,43 +10,29 @@ import hashlib
 
 def add_user(name, password, **kwargs):
     try:
-        # Kiểm tra dữ liệu đầu vào
+
         if not name or not password:
             raise ValueError("Tên và mật khẩu không được để trống!")
 
-        # Băm mật khẩu bằng Werkzeug
+
         hashed_password = generate_password_hash(password.strip())
 
-        # Tạo bản ghi KhachHang
+
         khachHang = KhachHang(tenKhachHang=name.strip())
         db.session.add(khachHang)
         db.session.flush()  # Đảm bảo lấy được id của KhachHang sau khi thêm
 
-        # Tạo bản ghi TaiKhoan
+
         user = TaiKhoan(
             idKhachHang=khachHang.id,
             ten=name,
             matKhau=hashed_password,
             email=(kwargs.get('email') or "").strip()
         )
-        print(name, password, kwargs.get('email'))
 
         db.session.add(user)
-
-        # Commit tất cả thay đổi một lần
         db.session.commit()
-    except ValueError as ve:
-        print(f"Lỗi dữ liệu: {ve}")
-        db.session.rollback()
-        raise
-    except SQLAlchemyError as sae:
-        print(f"Lỗi cơ sở dữ liệu: {sae}")
-        db.session.rollback()
-        raise
-    except Exception as ex:
-        print(f"Lỗi không xác định: {ex}")
-        db.session.rollback()
-        raise
+
 
 
 # def check_login(username, password, role = None):

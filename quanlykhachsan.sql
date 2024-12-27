@@ -467,10 +467,9 @@ DROP TABLE IF EXISTS `taikhoan`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `taikhoan` (
-  `tenDangNhap` varchar(50) NOT NULL,
-  `matKhau` varchar(50) NOT NULL,
-  `sdt` varchar(15) DEFAULT NULL,
-  `email` varchar(100) NOT NULL,
+  `ten` varchar(50) NOT NULL,
+  `matKhau` varchar(200) NOT NULL,
+  `email` varchar(200) NOT NULL,
   `thoiGianTao` datetime NOT NULL,
   `idLoaiTaiKhoan` int NOT NULL,
   `idKhachHang` int NOT NULL,
@@ -489,7 +488,6 @@ CREATE TABLE `taikhoan` (
 
 LOCK TABLES `taikhoan` WRITE;
 /*!40000 ALTER TABLE `taikhoan` DISABLE KEYS */;
-INSERT INTO `taikhoan` VALUES ('admin','123','0901234567','admin@example.com','2024-12-10 21:07:19',1,1,1),('customer1','123','0912345678','customer1@example.com','2024-12-10 21:07:19',2,2,2),('employee1','123','0923456789','employee1@example.com','2024-12-10 21:07:19',3,3,3),('v','c4ca4238a0b923820dcc509a6f75849b',NULL,'lequangvinh13052004@gmail.com','2024-12-23 16:54:10',2,154542128,4),('nhanvien','202cb962ac59075b964b07152d234b70',NULL,'nhanvien@gmail.com','2024-12-24 18:22:36',3,154542129,5);
 /*!40000 ALTER TABLE `taikhoan` ENABLE KEYS */;
 UNLOCK TABLES;
 
