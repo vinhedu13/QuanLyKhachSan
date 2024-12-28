@@ -3,7 +3,7 @@ import uuid
 
 from sqlalchemy import and_
 
-from QLKSWEBSITE import app,  login
+from QLKSWEBSITE import app, login
 import paypalrestsdk
 from flask_login import login_user, logout_user, login_required, current_user
 from flask_sqlalchemy.model import Model
@@ -22,6 +22,7 @@ from werkzeug.security import generate_password_hash
 def index():
     return render_template('index.html')
 
+
 @app.route("/timkiem", methods=['GET', 'POST'])
 def timkiem():
     ngayNhanPhong = request.form.get('ngayNhanPhong')
@@ -29,8 +30,10 @@ def timkiem():
     ngayNhanPhong = ngayNhanPhong + " 14:00:00"
     ngayTraPhong = ngayTraPhong + " 12:00:00"
     soLuong = request.form.get('soLuong')
-    data = dao.TimKiem(ngayNhanPhong=ngayNhanPhong, ngayTraPhong=ngayTraPhong, soLuong = int(soLuong))
-    return render_template('search.html', data = data, soLuong = soLuong, ngayNhanPhong = ngayNhanPhong, ngayTraPhong = ngayTraPhong)
+    data = dao.TimKiem(ngayNhanPhong=ngayNhanPhong, ngayTraPhong=ngayTraPhong, soLuong=int(soLuong))
+    return render_template('search.html', data=data, soLuong=soLuong, ngayNhanPhong=ngayNhanPhong,
+                           ngayTraPhong=ngayTraPhong)
+
 
 @app.route("/datphong", methods=["GET", "POST"])
 @login_required
@@ -47,8 +50,9 @@ def datphong():
         tongTien = int(soLuong) * int(loaiPhong.donGia)
         print('ấdafafaf')
 
-    return render_template("datphong.html", tongTien = tongTien, ngaynhan = ngaynhan,
-                           thoiGianDat = thoiGianDat, idKhachHang = idKhachHang, idLoaiPhong = idLoaiPhong, soLuong = soLuong, ngaytra = ngaytra, khachHang = khachHang)
+    return render_template("datphong.html", tongTien=tongTien, ngaynhan=ngaynhan,
+                           thoiGianDat=thoiGianDat, idKhachHang=idKhachHang, idLoaiPhong=idLoaiPhong, soLuong=soLuong,
+                           ngaytra=ngaytra, khachHang=khachHang)
 
 
 @app.route("/thanhtoan", methods=['POST', 'GET'])
@@ -96,15 +100,18 @@ def thanhtoan():
                 phieuDatPhong = models.PhieuDatPhong.query.filter_by(id=idPhieu).first()
                 phieuDatPhong.trangThai = 'Đã nhận phòng'
                 db.session.commit()
-                phieuThuePhong = dao.TaoPhieuThuePhong(id = dao.taoID(), ngayNhanPhong= datetime.now(), ngayTraPhong=session.get('ngayTraPhong'), idPhieuDatPhong=idPhieu)
+                phieuThuePhong = dao.TaoPhieuThuePhong(id=dao.taoID(), ngayNhanPhong=datetime.now(),
+                                                       ngayTraPhong=session.get('ngayTraPhong'),
+                                                       idPhieuDatPhong=idPhieu)
                 khachHangTrongPhong = dao.TachDanhSachKhachHang(session.get('khachHang'))
                 for k in khachHangTrongPhong:
                     loaiKhach = models.LoaiKhach.query.filter_by(tenLoaiKhach=k[2]).first()
-                    khachHang = models.KhachHang(tenKhachHang=k[0], cccd=k[1], idLoaiKhach = loaiKhach.id)
+                    khachHang = models.KhachHang(tenKhachHang=k[0], cccd=k[1], idLoaiKhach=loaiKhach.id)
                     khachHang = dao.TaoKhachHang(khachHang)
-                    phieuThuePhong_Phong = dao.TaoPhieuThuePhong_Phong(idPhieuThuePhong = phieuThuePhong.id, idPhong = k[3])
-                    #phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu=phieuThuePhong.id, idKhachHang=khachHang.id)
-                    phieuThuePhong_Phong_KhachHang = models.PhieuThuePhong_Phong_KhachHang(idKhachHang=khachHang.id, idPhieuThuePhong_Phong = phieuThuePhong_Phong.id)
+                    phieuThuePhong_Phong = dao.TaoPhieuThuePhong_Phong(idPhieuThuePhong=phieuThuePhong.id, idPhong=k[3])
+                    # phieu_KhachHang = dao.TaoPhieu_KhachHang(idPhieu=phieuThuePhong.id, idKhachHang=khachHang.id)
+                    phieuThuePhong_Phong_KhachHang = models.PhieuThuePhong_Phong_KhachHang(idKhachHang=khachHang.id,
+                                                                                           idPhieuThuePhong_Phong=phieuThuePhong_Phong.id)
                     dao.TaoPhieuThuePhong_Phong_KhachHang(phieuThuePhong_Phong_KhachHang)
                 print(f"Đã cập nhật trạng thái của phiếu {idPhieu} thành 'Đã nhận phòng'")
                 return render_template('lapphieuthuephong_thanhcong.html')
@@ -120,15 +127,16 @@ def thanhtoan():
 # def taophieuthue():
 #
 
-@app.route("/momo", methods = ["GET", "POST"])
+@app.route("/momo", methods=["GET", "POST"])
 def momo():
     idPhieu = dao.taoID()
     tongTien = session.get('tongTien')
     tongTien = int(float(tongTien))
     print(idPhieu, tongTien, session.get('loaiPhieu'))
-    return dao.ThanhToanMomo(idPhieu= idPhieu, tongTien = str(tongTien))
+    return dao.ThanhToanMomo(idPhieu=idPhieu, tongTien=str(tongTien))
 
-@app.route("/paypal", methods = ["GET", "POST"])
+
+@app.route("/paypal", methods=["GET", "POST"])
 def paypal():
     idPhieu = taoID()
     tongTien = session.get('tongTien')
@@ -167,16 +175,16 @@ def payment_redirect():
     if str(session.get('loaiPhieu')) == "phieuDat":
         if current_user.idLoaiTaiKhoan == 2:
             dao.TaoPhieuDatPhong(id=int(orderId), idKhachHang=session.get('idKhachHang'),
-                             idLoaiPhong=session.get('idLoaiPhong'),
-                             soLuong=session.get('soLuong'), ngayNhanPhong=session.get('ngaynhan'),
-                             ngayTraPhong=session.get('ngaytra'))
+                                 idLoaiPhong=session.get('idLoaiPhong'),
+                                 soLuong=session.get('soLuong'), ngayNhanPhong=session.get('ngaynhan'),
+                                 ngayTraPhong=session.get('ngaytra'))
             hoaDon = models.HoaDon(idPhieu=int(orderId), trangThai=1, tongTien=amount, thoiGianTao=datetime.now())
             db.session.add(hoaDon)
             db.session.commit()
         else:
             khachHang = models.KhachHang(tenKhachHang=session.get('hoTen'), email=session.get('email'))
             dao.TaoKhachHang(khachHang)
-            dao.TaoPhieuDatPhong(id=int(orderId), idKhachHang= khachHang.id,
+            dao.TaoPhieuDatPhong(id=int(orderId), idKhachHang=khachHang.id,
                                  idLoaiPhong=session.get('idLoaiPhong'),
                                  soLuong=session.get('soLuong'), ngayNhanPhong=session.get('ngaynhan'),
                                  ngayTraPhong=session.get('ngaytra'))
@@ -184,7 +192,8 @@ def payment_redirect():
             db.session.add(hoaDon)
             db.session.commit()
     if str(session.get('loaiPhieu')) == "phieuThue":
-        phieuThuePhong = dao.TaoPhieuThuePhong(id = int(orderId), ngayNhanPhong = datetime.now(), ngayTraPhong= session.get('ngayTraPhong'))
+        phieuThuePhong = dao.TaoPhieuThuePhong(id=int(orderId), ngayNhanPhong=datetime.now(),
+                                               ngayTraPhong=session.get('ngayTraPhong'))
         khachHangTrongPhong = dao.TachDanhSachKhachHang(session.get('khachHang'))
         for k in khachHangTrongPhong:
             loaiKhach = models.LoaiKhach.query.filter_by(tenLoaiKhach=k[2]).first()
@@ -199,6 +208,7 @@ def payment_redirect():
         db.session.add(hoaDon)
         db.session.commit()
     return render_template('thanhtoanthanhcong.html')
+
 
 # @app.route('/payment_success', methods=['GET'])
 # def payment_success():
@@ -280,24 +290,30 @@ def payment_success():
 def payment_cancel():
     return jsonify({"message": "Payment canceled by user!"})
 
+
 @app.route('/')
 def home():
     return render_template('index.html')
+
+
 @app.route('/discounts', methods=['GET', 'POST'])
 def discount():
     return render_template('discounts.html')
 
-@app.route('/findOrder', methods = ['GET'])
+
+@app.route('/findOrder', methods=['GET'])
 def find_order():
     phieuDatPhong = None
     maDatPhong = request.args.get("maDatPhong")
     if maDatPhong:
         phieuDatPhong = models.PhieuDatPhong.query.filter_by(id=maDatPhong)
-    return render_template('find_order.html', phieuDatPhong = phieuDatPhong)
+    return render_template('find_order.html', phieuDatPhong=phieuDatPhong)
+
 
 @app.route('/sign_in', methods=['GET', 'POST'])
 def sign_up():
     return render_template('sign_in.html')
+
 
 @app.route('/room/single')
 def room_single():
@@ -307,6 +323,7 @@ def room_single():
         "Tiện ích: Wifi, điều hòa, TV, minibar",
     ])
 
+
 @app.route('/room/double')
 def room_double():
     return render_template('room_double.html', room_name="Phòng Đôi", price=800000, details=[
@@ -314,6 +331,7 @@ def room_double():
         "Loại giường: 1 giường đôi",
         "Tiện ích: Wifi, điều hòa, TV, minibar",
     ])
+
 
 @app.route('/room/family')
 def room_family():
@@ -323,6 +341,7 @@ def room_family():
         "Tiện ích: Wifi, điều hòa, TV, minibar",
     ])
 
+
 @app.route('/room/villa')
 def room_villa():
     return render_template('room_villa.html', room_name="Villa", price=5000000, details=[
@@ -330,6 +349,7 @@ def room_villa():
         "Loại giường: 4 giường đôi",
         "Tiện ích: Hồ bơi, bếp, không gian riêng tư",
     ])
+
 
 @app.route('/lapphieuthuephong', methods=['POST', 'GET'])
 def kiemtrathuephong():
@@ -343,7 +363,8 @@ def kiemtrathuephong():
             phongTrong = dao.DanhSachPhongTrong(phieuDatPhong.idLoaiPhong, thoiGianNhan, thoiGianTra)
         else:
             return render_template('find_order.html')
-        return render_template('lapphieuthuephong.html', phongTrong=phongTrong, phieuDatPhong=phieuDatPhong, thoiGianTra = thoiGianTra)
+        return render_template('lapphieuthuephong.html', phongTrong=phongTrong, phieuDatPhong=phieuDatPhong,
+                               thoiGianTra=thoiGianTra)
     if request.method == 'GET':
         idLoaiPhong = request.args.get('idLoaiPhong', 1)
         loaiPhongCheck = models.LoaiPhong.query.get(idLoaiPhong)
@@ -353,8 +374,9 @@ def kiemtrathuephong():
             thoiGianTra = datetime.now()
         if thoiGianTra:
             phongTrong = dao.DanhSachPhongTrong(idLoaiPhong, thoiGianNhan, thoiGianTra)
-        return render_template('lapphieuthuephong.html',loaiPhong=loaiPhong, idLoaiPhong=idLoaiPhong,
-                               phongTrong=phongTrong, thoiGianTra=thoiGianTra, loaiPhongCheck = loaiPhongCheck)
+        return render_template('lapphieuthuephong.html', loaiPhong=loaiPhong, idLoaiPhong=idLoaiPhong,
+                               phongTrong=phongTrong, thoiGianTra=thoiGianTra, loaiPhongCheck=loaiPhongCheck)
+
 
 @app.route('/lapphieuthuephong_thanhcong', methods=['GET', 'POST'])
 def lapphieuthuephong():
@@ -364,10 +386,10 @@ def lapphieuthuephong():
     phong = request.args.get('phongDuocChon')
     khachHang = request.args.get('khachHang')
     khachHang = dao.TachDanhSachKhachHang(khachHang)
-    #for khach in khachHang:
-        # k = models.KhachHang(tenKhachHang = khach[0], cccd = khach[1])
-        # db.session.add(k)
-        # db.session.commit()
+    # for khach in khachHang:
+    # k = models.KhachHang(tenKhachHang = khach[0], cccd = khach[1])
+    # db.session.add(k)
+    # db.session.commit()
     print(khachHang)
     return render_template('lapphieuthuephong_thanhcong.html')
 
@@ -379,49 +401,53 @@ def nhanvien():
     loaiPhong = models.LoaiPhong.query.all()
     phong = models.Phong.query.all()
     id = request.args.get('id')
-    return render_template('nhanvien.html', phongDangSuDung=phongDangSuDung, loaiPhong = loaiPhong, id = id, phong = phong)
+    return render_template('nhanvien.html', phongDangSuDung=phongDangSuDung, loaiPhong=loaiPhong, id=id, phong=phong)
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def user_register():
     err_msg = ""
     if request.method.__eq__('POST'):
         name = request.form.get('name').strip()
+        username = request.form.get('username').strip()
+        phone = request.form.get('phone').strip()
         email = request.form.get('email').strip()
         password = request.form.get('password').strip()
         confirm = request.form.get('comfirm').strip()
 
-        if not name or not email or not password or not confirm:
+        if not name or not email or not password or not confirm or not username or not phone:
             err_msg = "Vui lòng điền đầy đủ tất cả các trường!"
         elif password != confirm:
             err_msg = "Mật khẩu không khớp!"
         else:
             try:
                 hashed_password = generate_password_hash(password)
-                utils.add_user(name=name, password=hashed_password, email=email)
+                utils.add_user(name=name, username=username, password=hashed_password, phone=phone, email=email)
                 flash("Tạo tài khoản thành công! Vui lòng đăng nhập.", "success")
                 return redirect(url_for('sign_up'))
             except Exception as ex:
-                # Ghi lỗi để theo dõi (sử dụng logging trong sản phẩm thực tế)
                 print(f"Lỗi: {ex}")
                 err_msg = "Hệ thống gặp lỗi, vui lòng thử lại sau."
 
-    return render_template('index.html', err_msg=err_msg)
+    return render_template('sign_in.html', err_msg=err_msg)
+
 
 @app.route('/user-login', methods=['GET', 'POST'])
 def user_signin():
     err_msg = ""
     if request.method.__eq__('POST'):
-        email = request.form.get('email')
+        username = request.form.get('username')
         password = request.form.get('password')
-
-        user = utils.check_login(email=email, password=password)
+        print(username, password)
+        user = utils.check_login(username=username, password=password)
         if user:
             login_user(user=user)
             return redirect(url_for('index'))
         else:
             err_msg = 'Username hoặc password không chính xác!!!'
 
-    return render_template('sign_up.html')
+    return render_template('sign_up.html', err_msg=err_msg)
+
 
 @app.route('/nhanvien-login', methods=['GET', 'POST'])
 def nhanvien_signin():
@@ -430,7 +456,7 @@ def nhanvien_signin():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        user = utils.check_login(username=username, password=password, role = 3)
+        user = utils.check_login(username=username, password=password, role=3)
         if user:
             login_user(user=user)
         else:
@@ -479,6 +505,6 @@ def test():
 
 if __name__ == '__main__':
     from QLKSWEBSITE.admin import *
+
     with app.app_context():
         app.run(debug=True)
-

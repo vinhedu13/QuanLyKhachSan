@@ -144,7 +144,9 @@ class HoaDon(BaseModel):
 class TaiKhoan(BaseModel, UserMixin):
     __tablename__ = "taikhoan"
     ten = db.Column(db.String(50), nullable=False)
+    tenDangNhap = db.Column(db.String(50), nullable=False)
     matKhau = db.Column(db.String(200), nullable=False)
+    soDienThoai = db.Column(db.String(10), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     thoiGianTao = db.Column(db.DateTime, nullable=False, default = datetime.now())
     idLoaiTaiKhoan = db.Column(db.Integer, ForeignKey('loaitaikhoan.id'), nullable=False, info={"unsigned": True}, default= 2)

@@ -20,24 +20,26 @@
 </head>
 <body>
 {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <ul class="alert-list">
-        {% for category, message in messages %}
-            <li class="alert alert-{{ category }}">{{ message }}</li>
-        {% endfor %}
-        </ul>
-    {% endif %}
+{% if messages %}
+<ul class="alert-list">
+    {% for category, message in messages %}
+    <li class="alert alert-{{ category }}">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
 {% endwith %}
 <div class="container" id="container">
     <div class="form-container sign-up">
         <form method="post" action="{{ url_for('user_register') }}">
             <h1>Tạo tài khoản</h1>
-
             <span>Đăng kí với E-mail</span>
-            <input type="text" id="name" name="name" placeholder="Tên" required>
+            <input type="text" id="name" name="name" placeholder="Họ Tên" required>
+            <input type="text" id="username" name="username" placeholder="Tên đăng nhập">
             <input type="email" id="email" name="email" placeholder="Nhập email">
+            <input type="text" id="phone" name="phone" placeholder="Nhập số điện thoại" maxlength="10" pattern="\d{10}"
+                   title="Số điện thoại phải chứa đúng 10 chữ số">
             <input type="password" id="pass" name="password" placeholder="Nhập mật khẩu">
-            <input type="password" id="pass-comfirm" name="comfirm" placeholder="Nhập lại mật khẩu">
+            <input type="password" id="comfirm" name="comfirm" placeholder="Nhập lại mật khẩu">
             <buton><input type="submit" value="Đăng ký" class="btn btn-danger"></buton>
         </form>
     </div>
@@ -51,8 +53,8 @@
                 <a href="#" class="icons"><i class="bx bxl-linkedin"></i></a>
             </div>
             <span>Đăng nhập với E-mail và password</span>
-            <input type="email" placeholder="Nhập email" required>
-            <input tyoe="password" placeholder="Nhập mật khẩu">
+            <input type="username" id="username" name="username" placeholder="Nhập tên đăng nhập" required>
+            <input tyoe="password" id="password" name="password" placeholder="Nhập mật khẩu">
             <buton><input type="submit" value="Đăng nhập" class="btn btn-danger"></buton>
         </form>
     </div>
@@ -60,7 +62,7 @@
         <div class="toggle">
             <div class="toggle-panel toggle-left">
                 <h1>Chào mừng bạn<br> trờ lại </h1>
-                <p>Đăng nhập với email và mật khẩu</p>
+                <p>Đăng nhập với tên đăng nhập và mật khẩu</p>
                 <button class="hidden" id="login">Đăng Nhập</button>
 
             </div>

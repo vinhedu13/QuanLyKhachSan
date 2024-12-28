@@ -17,6 +17,7 @@ h1.subject {
 .btn-login {
     background-color: #FFFAE3 !important;
     color: #000000 !important;
+    border-radius: 5px;
 }
 
 /* Tăng chiều rộng cho dropdown-menu */
