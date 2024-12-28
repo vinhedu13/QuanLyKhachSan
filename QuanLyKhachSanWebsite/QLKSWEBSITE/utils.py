@@ -1,9 +1,11 @@
 import json, os
-from werkzeug.security import check_password_hash
+
+from flask import render_template
+
 from sqlalchemy.sql.functions import user
-from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import SQLAlchemyError
 from QLKSWEBSITE import db
+
 from QLKSWEBSITE.models import TaiKhoan, KhachHang
 import hashlib
 
@@ -12,8 +14,8 @@ def add_user(username, name, password, **kwargs):
         if not name or not password:
             raise ValueError("Tên và mật khẩu không được để trống!")
 
-        hashed_password = generate_password_hash(password.strip())
 
+        hashed_password = str(hashlib.md5(password.strip().encode('utf-8')).hexdigest())
         khachHang = KhachHang(tenKhachHang=username.strip())
         db.session.add(khachHang)
         db.session.flush()  # Đảm bảo lấy được id của KhachHang sau khi thêm
@@ -22,7 +24,7 @@ def add_user(username, name, password, **kwargs):
             idKhachHang=khachHang.id,
             ten=name,
             tenDangNhap=username,
-            matKhau=hashed_password,
+            matKhau=password,
             soDienThoai=(kwargs.get('phone') or "").strip(),
             email=(kwargs.get('email') or "").strip()
         )
@@ -41,15 +43,12 @@ def add_user(username, name, password, **kwargs):
 
 
 def check_login(username, password, role=None):
-    print(username, password, role)
     u = TaiKhoan.query.filter_by(tenDangNhap=username.strip()).first()
-
-
-    if u and check_password_hash(u.matKhau, password):
+    if u and u.matKhau.__eq__(password):
         if role:
             u = u.filter(TaiKhoan.idLoaiTaiKhoan.__eq__(role))
-
-    return u
+        return u
+    return None
 
 
 def get_user_by_id(user_id):

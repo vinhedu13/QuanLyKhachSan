@@ -15,9 +15,9 @@ from QLKSWEBSITE import app, db, models, utils
 from QLKSWEBSITE.dao import paypal, TaoPhieuDatPhong, taoID
 from flask import render_template, request, redirect, url_for, flash
 import utils
-from werkzeug.security import generate_password_hash
 
 
+import hashlib
 @app.route("/")
 def index():
     return render_template('index.html')
@@ -421,8 +421,8 @@ def user_register():
             err_msg = "Mật khẩu không khớp!"
         else:
             try:
-                hashed_password = generate_password_hash(password)
-                utils.add_user(name=name, username=username, password=hashed_password, phone=phone, email=email)
+
+                utils.add_user(name=name, username=username, password=password, phone=phone, email=email)
                 flash("Tạo tài khoản thành công! Vui lòng đăng nhập.", "success")
                 return redirect(url_for('sign_up'))
             except Exception as ex:
@@ -431,6 +431,13 @@ def user_register():
 
     return render_template('sign_in.html', err_msg=err_msg)
 
+@app.route('/staff')
+def staff():
+    return render_template('nhanvien.html')
+
+@app.route('/admin-redirect')
+def admin_redirect():
+    return redirect(url_for('admin.index'))
 
 @app.route('/user-login', methods=['GET', 'POST'])
 def user_signin():
@@ -438,15 +445,24 @@ def user_signin():
     if request.method.__eq__('POST'):
         username = request.form.get('username')
         password = request.form.get('password')
-        print(username, password)
-        user = utils.check_login(username=username, password=password)
-        if user:
-            login_user(user=user)
-            return redirect(url_for('index'))
-        else:
-            err_msg = 'Username hoặc password không chính xác!!!'
 
-    return render_template('sign_up.html', err_msg=err_msg)
+        user = utils.check_login(username=username,password=password)
+
+        if user and user.matKhau.__eq__(password):
+            if user.idLoaiTaiKhoan == 1:
+                return redirect(url_for('admin_redirect'))
+            elif user.idLoaiTaiKhoan == 2:
+                login_user(user)
+                return redirect(url_for('index'))
+            elif user.idLoaiTaiKhoan == 3:
+                return redirect(url_for('staff'))
+            else:
+                err_msg = "Không xác định được loại tài khoản!"
+
+        else:
+            err_msg = 'Tên đăng nhập hoặc mật khẩu không chính xác!'
+
+    return render_template('sign_in.html', err_msg=err_msg)
 
 
 @app.route('/nhanvien-login', methods=['GET', 'POST'])
