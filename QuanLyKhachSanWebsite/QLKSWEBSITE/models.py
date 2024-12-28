@@ -199,6 +199,7 @@ class PhieuThuePhong_Phong_KhachHang(BaseModel):
     trangThai = db.Column(db.Enum('Đã nhận phòng','Đã trả phòng'), nullable = False, default='Đã nhận phòng')
 
 
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
