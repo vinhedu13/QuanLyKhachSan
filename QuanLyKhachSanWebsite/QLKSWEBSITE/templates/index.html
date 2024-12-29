@@ -1,0 +1,119 @@
+{% extends "Layout/base.html" %}
+{%block content%}
+<div class="container">
+    <div class="search-container">
+        <form action="/timkiem" method="post"> <!-- Thay đổi action theo yêu cầu của bạn -->
+            <div class="search-box">
+                <div class="search-item">
+                    <label for="destination">Bạn muốn đến đâu?</label>
+                    <input list="destinations" id="destination" name="destination"
+                           placeholder="Nhập hoặc chọn điểm đến">
+                    <datalist id="destinations">
+                        <option value="Hà Nội">
+                        <option value="TP. Hồ Chí Minh">
+                        <option value="Đà Nẵng">
+                        <option value="Đà Lạt">
+                        <option value="Vũng Tàu">
+                    </datalist>
+                </div>
+                <div class="search-item">
+                    <label for="ngayNhanPhong">Ngày nhận phòng</label>
+                    <input type="date" id="checkin-date" name="ngayNhanPhong" class="form-control" required>
+                </div>
+                <div class="search-item">
+                    <label for="ngayTraPhong">Ngày trả phòng</label>
+                    <input type="date" id="checkout-date" name="ngayTraPhong" class="form-control" required>
+                </div>
+                <div class="msearch-item">
+                    <label for="soLuong">Số người</label>
+                    <div id="guest-picker">
+                        <input type="text" id="guests" name="soLuong" placeholder="Nhấp để chọn số người"
+                               class="form-control" readonly required>
+                        <div class="guest-dropdown">
+                            <div class="guest-row">
+                                <label for="soLuong">Số Phòng:</label>
+                                <button type="button" class="decrease" data-target="adults">-</button>
+                                <span id="adults-count">1</span>
+                                <button type="button" class="increase" data-target="adults">+</button>
+                            </div>
+                            <button type="button" class="apply-btn btn btn-primary">Áp dụng</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="submit" class="search-btn">Tìm</button> <!-- Nút submit -->
+            </div>
+        </form>
+    </div>
+
+    <section class="search">
+        <h1>Tìm theo loại phòng</h1>
+        <div class="categories">
+            <div class="category">
+                <a href="\room\single"><img src="{{ url_for('static', filename='images/phongdon.jpg') }}"
+                                            alt="Phòng Đơn"></a>
+                <p>Phòng Đơn</p>
+            </div>
+            <div class="category">
+                <a href="\room\double"><img src="{{ url_for('static', filename='images/phongdoi.jpg') }}"
+                                            alt="Phòng Đôi"></a>
+                <p>Phòng Đôi</p>
+            </div>
+            <div class="category">
+                <a href="\room\family"><img src="{{ url_for('static', filename='images/phonggiadinh.jpg') }}"
+                                            alt="Phòng Gia Đình"></a>
+                <p>Phòng Gia Đình</p>
+            </div>
+            <div class="category">
+                <a href="\room\villa"><img src="{{ url_for('static', filename='images/villa.jpg') }}" alt="Villa"></a>
+                <p>Villa</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="destinations">
+        <h2>Điểm đến đang thịnh hành</h2>
+        <p>Các lựa chọn phổ biến nhất cho du khách từ Việt Nam</p>
+        <div class="destination-cards">
+            <div class="destination">
+                <a href="#"><img src="https://via.placeholder.com/300x200" alt="TP.Hồ Chí Minh"></a>
+                <p>TP. Hồ Chí Minh</p>
+                <p>Giá trung bình VND 1.741.899</p>
+            </div>
+            <div class="destination">
+                <a href="#"><img src="https://via.placeholder.com/300x200" alt="Đà Nẵng"></a>
+                <p>Đà Nẵng</p>
+                <p>Giá trung bình VND 2.326.732</p>
+            </div>
+            <div class="destination">
+                <a href="#"><img src="https://via.placeholder.com/300x200" alt="Vũng Tàu"></a>
+                <p>Vũng Tàu</p>
+                <p>Giá trung bình VND 5.721.270</p>
+            </div>
+            <div class="destination">
+                <a href="#"><img src="https://via.placeholder.com/300x200" alt="Hà Nội"></a>
+                <p>Hà Nội</p>
+                <p>Giá trung bình VND 1.865.494</p>
+            </div>
+            <div class="destination">
+                <a href="#"><img src="https://via.placeholder.com/300x200" alt="Đà Lạt"></a>
+                <p>Đà Lạt</p>
+                <p>Giá trung bình VND 1.079.714</p>
+            </div>
+        </div>
+    </section>
+    <section>
+        <div class="alert alert-warning text-center mt-4" role="alert">
+            <h5 class="mb-3">🎉 Ưu đãi đặc biệt! 🎉</h5>
+            <p>Giảm giá đến <strong>50%</strong> cho tất cả đơn hàng! Chỉ còn <span id="promo-timer"></span>.</p>
+        </div>
+    </section>
+</div>
+
+<form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post">
+  <input type="hidden" name="cmd" value="_s-xclick">
+  <input type="hidden" name="hosted_button_id" value="6RNT8A4HBBJRE">
+  <input type="image" src="https://www.paypalobjects.com/webstatic/en_US/i/btn/png/btn_buynow_107x26.png" alt="Buy Now">
+  <img alt="" src="https://paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+{%endblock%}

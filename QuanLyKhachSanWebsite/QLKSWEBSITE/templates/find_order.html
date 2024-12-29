@@ -1,0 +1,55 @@
+{% extends "Layout/base.html" %}
+{%block content%}
+<div class="container">
+    <header>
+        <h1>Tìm Kiếm Đơn Hàng</h1>
+    </header>
+
+    <section class="search-section">
+        <form method="GET" action="/findOrder">
+            <label for="order-id">Mã đặt phòng:</label>
+            <input type="text" id="order-id" placeholder="Nhập mã đặt phòng" name="maDatPhong">
+            <button type="submit">Tìm kiếm</button>
+        </form>
+    </section>
+
+    <section class="results-section">
+        <h2>Kết quả tìm kiếm</h2>
+        <table id="results-table">
+            <thead>
+            <tr>
+                <th>Mã đặt</th>
+                <th>Ngày nhận</th>
+                <th>Ngày trả</th>
+                <th>Trạng thái</th>
+                <th>Loại phòng</th>
+                <th>Lập phiếu thuê</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if phieuDatPhong != None %}
+            {% for p in phieuDatPhong %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.ngayNhanPhong }}</td>
+                <td>{{ p.ngayTraPhong }}</td>
+                <td>{{ p.trangThai }}</td>
+                <td>{{ p.loaiphong.tenLoaiPhong }}</td>
+                <td>
+                    <form method="POST" action="/lapphieuthuephong" class="btn btn-primary">
+                        <input type="hidden" name = 'idPhieuDatPhong' value = '{{ p.id }}'>
+                        <input type="hidden" name = 'ngayTraPhong' value = '{{ p.ngayTraPhong }}'>
+
+                        <button type="submit">Lập</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <div class="alert alert-info mt-1">Không có phiếu đặt phòng nào.</div>
+            {% endif %}
+            </tbody>
+        </table>
+    </section>
+</div>
+{%endblock%}
